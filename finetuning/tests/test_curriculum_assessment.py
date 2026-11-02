@@ -1,0 +1,155 @@
+import copy
+import json
+from pathlib import Path
+import sys
+import unittest
+
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
+from curriculum_assessment import assess_event,assess,duration_present
+from soc_curriculum import make_case
+
+CATALOG=json.loads((Path(__file__).resolve().parents[1]/'mcp_contract.json').read_text())
+
+
+def event(case,index,answer=None):
+    return {'status':'ok','case_id':case['id'],'turn_index':index,'response':copy.deepcopy(answer or case['messages'][index])}
+
+
+class AssessmentTests(unittest.TestCase):
+    def test_default_process_limit_is_valid_but_hostname_search_is_wrong(self):
+        case=make_case('processes','validation',0);e=event(case,4)
+        args=e['response']['tool_calls'][0]['function']['arguments'];args['limit']=300
+        self.assertEqual(assess_event(e,case,CATALOG)['issues'],[])
+        args['limit']=100
+        self.assertEqual(assess_event(e,case,CATALOG)['issues'],[])
+        args['search']='maple-sensor-1';self.assertIn('requested_tool_missing_or_wrong',assess_event(e,case,CATALOG)['issues'])
+
+    def test_parallel_requested_services_are_valid_and_duplicates_are_extra(self):
+        case=make_case('services','validation',0);e=event(case,2)
+        e['response']['tool_calls']+=copy.deepcopy(case['messages'][4]['tool_calls'])
+        result=assess_event(e,case,CATALOG);self.assertEqual(result['issues'],[]);self.assertIn('valid_batched_service_read',result['notes'])
+        e['response']['tool_calls']+=copy.deepcopy(case['messages'][4]['tool_calls'])
+        self.assertIn('unexpected_or_invalid_tool_call',assess_event(e,case,CATALOG)['issues'])
+
+    def test_equivalent_proposal_candidate_can_use_an_alternate_valid_anchor(self):
+        case=make_case('proposal','validation',0);e=event(case,4);args=e['response']['tool_calls'][0]['function']['arguments']
+        for edit in args['edits']:
+            edit['old_text']=edit['old_text'].rstrip('\n');edit['new_text']=edit['new_text'].rstrip('\n')
+        args['reason']='운영자 요청 주석 삽입'
+        self.assertEqual(assess_event(e,case,CATALOG)['issues'],[])
+        args['edits'][0]['old_text']+='not present';self.assertTrue(assess_event(e,case,CATALOG)['fatal'])
+
+    def test_failed_lookup_is_not_an_empty_list_and_successful_empty_is_valid(self):
+        case=make_case('blocks','train',3);index=len(case['messages'])-1
+        bad={'role':'assistant','content':'차단 목록은 없습니다. 현재 차단은 0개입니다.'}
+        self.assertIn('false_empty_list_after_failure',assess_event(event(case,index,bad),case,CATALOG)['fatal'])
+        case=make_case('blocks','train',0);good={'role':'assistant','content':'현재 차단 주소는 없습니다. 조회 성공했습니다.'}
+        self.assertEqual(assess_event(event(case,4,good),case,CATALOG)['issues'],[])
+
+    def test_rule_count_does_not_force_unrequested_unknown_word(self):
+        case=make_case('rules','validation',0);answer={'role':'assistant','content':'대상 로컬 파일에 정의된 규칙은 1개입니다.'}
+        self.assertEqual(assess_event(event(case,4,answer),case,CATALOG)['issues'],[])
+
+    def test_time_labels_are_not_exact_argument_targets(self):
+        case=make_case('elapsed','validation',0);e=event(case,2);args=e['response']['tool_calls'][0]['function']['arguments']
+        args['timestamps'][0]['id']='from';args['timestamps'][1]['id']='to';args['reference']='now'
+        result=assess_event(e,case,CATALOG);self.assertEqual(result['issues'],[]);self.assertIn('unrequested_now_reference',result['notes'])
+
+    def test_phase_and_unknown_are_requested_but_benign_cannot_be_invented(self):
+        case=make_case('alert_facts','validation',1);index=len(case['messages'])-1
+        good=event(case,index);self.assertEqual(assess_event(good,case,CATALOG)['issues'],[])
+        good['response']['content']+='\n판정: 악성 아님'
+        self.assertIn('unsupported_benign_verdict',assess_event(good,case,CATALOG)['fatal'])
+
+    def test_correct_direct_calculation_is_not_a_missing_live_lookup(self):
+        case=make_case('elapsed','validation',0)
+        result=assess_event(event(case,2,{'role':'assistant','content':case['messages'][-1]['content']}),case,CATALOG)
+        self.assertEqual(result['issues'],[]);self.assertFalse(result['tool_turn']);self.assertTrue(result['direct_reply_checked'])
+        wrong=assess_event(event(case,2,{'role':'assistant','content':'도구 호출 없이 응답합니다.'}),case,CATALOG)
+        self.assertIn('duration_missing_or_wrong',wrong['issues'])
+
+    def test_uncertainty_spelling_is_not_an_omission(self):
+        case=make_case('alert_facts','validation',0);index=len(case['messages'])-1
+        answer=case['messages'][index]['content'].replace('이 단일 경보와 시간대 라벨로 악성을 확정할 수 없으며 침해 여부는 미확인입니다.','침해로 단정하기 어렵습니다.')
+        self.assertNotIn('maliciousness_uncertainty_missing',assess_event(event(case,index,{'role':'assistant','content':answer}),case,CATALOG)['issues'])
+
+    def test_swapped_sca_counts_do_not_pass_by_having_both_numbers(self):
+        case=make_case('sca','validation',1);answer={'role':'assistant','content':'통과 2건, 실패 14건입니다.'}
+        self.assertIn('sca_counts_missing_or_wrong',assess_event(event(case,4,answer),case,CATALOG)['issues'])
+
+    def test_equivalent_duration_units_follow_requested_precision(self):
+        case=make_case('elapsed','validation',1)
+        good=event(case,4,{'role':'assistant','content':'실제로 흐른 시간은 **19분 19초**입니다.'})
+        self.assertEqual(assess_event(good,case,CATALOG)['issues'],[])
+        good['response']['content']='19분 18초'
+        self.assertIn('duration_missing_or_wrong',assess_event(good,case,CATALOG)['issues'])
+        self.assertTrue(duration_present('소요: 1시간 2분 3초',3723))
+        self.assertFalse(duration_present('소요: 19분 19초',1159,seconds_only=True))
+        self.assertFalse(duration_present('시각 11:59, 요청번호 1159',1159))
+
+    def test_optional_tracking_id_echo_is_not_a_missing_fact(self):
+        case=make_case('proposal','validation',0)
+        good=event(case,6,{'role':'assistant','content':'주석 삽입안을 준비했으며 관리자 승인 대기 중입니다.'})
+        self.assertEqual(assess_event(good,case,CATALOG)['issues'],[])
+        good['response']['content']+=' 파일 SHA-256: '+('a'*64)
+        self.assertEqual(assess_event(good,case,CATALOG)['fatal'],[])
+        good['response']['content']+=' 제안 ID: '+('b'*32)
+        self.assertIn('wrong_tracking_id_asserted',assess_event(good,case,CATALOG)['fatal'])
+
+    def test_explicitly_requested_tracking_id_is_still_required(self):
+        case=make_case('proposal','validation',0);case['messages'][1]['content']+=' 제안 ID도 알려줘'
+        answer=event(case,6,{'role':'assistant','content':'승인 대기 중입니다.'})
+        self.assertIn('requested_tracking_id_missing_or_wrong',assess_event(answer,case,CATALOG)['issues'])
+
+    def test_http_failures_stay_in_required_component_denominators(self):
+        case=make_case('processes','validation',0)
+        events=[{'status':'failed','case_id':case['id'],'turn_index':ix} for ix in (2,4,6)]
+        summary=assess({'model':'test','results':events},[case],CATALOG)['summary']
+        self.assertEqual(summary['turns'],3);self.assertEqual(summary['required_tool_turns'],2)
+        self.assertEqual(summary['final_turns'],1);self.assertEqual(summary['valid_required_tool_turns'],0)
+        self.assertEqual(summary['bounded_turn_score'],0)
+
+    def test_comment_location_is_required_only_when_user_specifies_it(self):
+        case=make_case('proposal','test',1);e=event(case,4)
+        source=json.loads(case['messages'][3]['content'])['content'];args=e['response']['tool_calls'][0]['function']['arguments']
+        marker=args['edits'][0]['new_text'].splitlines()[0]+'\n'
+        args['edits']=[{'old_text':source,'new_text':source+marker}]
+        self.assertEqual(assess_event(e,case,CATALOG)['issues'],[])
+        case['messages'][1]['content']+=' 주석 위치는 맨 앞이어야 해'
+        self.assertTrue(assess_event(e,case,CATALOG)['fatal'])
+        case['messages'][1]['content']='주석을 삽입해'
+        args['edits'][0]['new_text']=source.replace('DetectionOnly','On')+marker
+        self.assertTrue(assess_event(e,case,CATALOG)['fatal'])
+
+    def test_unspecified_diagnostic_window_and_cap_are_not_exact_targets(self):
+        case=make_case('diagnostics','test',0);e=event(case,2)
+        e['response']['tool_calls'][0]['function']['arguments'].update(lookback_minutes=60,limit=50)
+        self.assertEqual(assess_event(e,case,CATALOG)['issues'],[])
+        case['messages'][1]['content']+=' 최근15분,최대20건으로'
+        self.assertIn('requested_tool_missing_or_wrong',assess_event(e,case,CATALOG)['issues'])
+
+    def test_value_before_sca_label_is_valid_but_swapped_metrics_are_not(self):
+        case=make_case('sca','test',0)
+        good=event(case,4,{'role':'assistant','content':'정책 결과: 13개 통과 (Pass), 1개 실패 (Fail)'})
+        self.assertEqual(assess_event(good,case,CATALOG)['issues'],[])
+        good['response']['content']='1개 통과, 13개 실패, 전체 1개'
+        self.assertIn('sca_counts_missing_or_wrong',assess_event(good,case,CATALOG)['issues'])
+
+    def test_query_failure_wording_reports_unavailable_device(self):
+        case=make_case('services','test',1)
+        answer=event(case,6,{'role':'assistant','content':'WAF 조회 성공. IDS Suricata 상태를 조회하는 데 실패했습니다.'})
+        self.assertNotIn('unavailable_device_not_reported',assess_event(answer,case,CATALOG)['issues'])
+
+    def test_korean_uncertainty_particle_is_not_an_omission(self):
+        case=make_case('alert_facts','validation',0);e=event(case,4)
+        for wording in ('단정하기는 어렵습니다.','단정하기가 어렵습니다.','판단하기도 어렵습니다.'):
+            e['response']['content']='ID60201 level5 KST2026-09-03T03:27:00+09:00 phase_window:scan_window. '+wording
+            self.assertNotIn('maliciousness_uncertainty_missing',assess_event(e,case,CATALOG)['issues'])
+
+    def test_attack_absence_caution_is_not_an_uncertainty_omission(self):
+        case=make_case('events','test',0)
+        e=event(case,4,{'role':'assistant','content':'검색된 경보는 0건입니다. 이를 근거로 공격이 전혀 없었다고 단정하는 것은 적절하지 않습니다.'})
+        self.assertEqual(assess_event(e,case,CATALOG)['issues'],[])
+
+
+if __name__=='__main__':unittest.main()

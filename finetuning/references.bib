@@ -1,0 +1,804 @@
+% Dataset and model references. Access dates are not publication dates.
+% Training role and retained file hashes: TRAINING_PROVENANCE.json.
+% Do not cite a prepared-only source as a completed training experiment.
+@misc{nous_hermes_function_calling_v1,
+  author = {{Nous Research}},
+  title = {{Hermes Function Calling v1}},
+  url = {https://huggingface.co/datasets/NousResearch/hermes-function-calling-v1},
+  urldate = {2026-10-29},
+  note = {Dataset repository. Includes Glaive-derived subset; see per-record source attribution.}
+}
+@misc{glaive_function_calling_v2,
+  author = {{Glaive AI}},
+  title = {{Glaive Function Calling v2}},
+  url = {https://huggingface.co/datasets/glaiveai/glaive-function-calling-v2},
+  urldate = {2026-10-29},
+  note = {Prepared corpus source; no completed full-corpus training claim.}
+}
+@misc{djlougen_hermes_filtered,
+  author = {{DJLougen}},
+  title = {{Hermes Agent Reasoning Traces -- Quality Filtered}},
+  year = {2026},
+  url = {https://huggingface.co/datasets/DJLougen/hermes-agent-traces-filtered},
+  urldate = {2026-10-29},
+  note = {Cite both this filtered version and the original Lambda dataset. Prepared-only in retained experiments.}
+}
+@misc{lambda_hermes_traces,
+  author = {{Lambda}},
+  title = {{Hermes Agent Reasoning Traces}},
+  url = {https://huggingface.co/datasets/lambda/hermes-agent-reasoning-traces},
+  urldate = {2026-10-29},
+  note = {Upstream of the DJLougen filtered release; current card is not a recovered historical acquisition revision.}
+}
+@misc{sevenllm_dataset,
+  author = {{Multilingual-Multimodal-NLP}},
+  title = {{SEVENLLM-Dataset}},
+  url = {https://huggingface.co/datasets/Multilingual-Multimodal-NLP/SEVENLLM-Dataset},
+  urldate = {2026-10-29},
+  note = {Train source prepared separately from the excluded test split.}
+}
+@article{ji2024sevenllm,
+  author = {Ji, Hangyuan and Yang, Jian and Chai, Linzheng and Wei, Chaoren and Yang, Liqun and Duan, Yunlong and Wang, Yunli and Sun, Tianzhen and Guo, Hongcheng and Li, Tongliang and Ren, Changyu and Li, Zhoujun},
+  title = {{SEvenLLM}: Benchmarking, Eliciting, and Enhancing Abilities of Large Language Models in Cyber Threat Intelligence},
+  journal = {arXiv preprint arXiv:2405.03446},
+  year = {2024},
+  doi = {10.48550/arXiv.2405.03446},
+  url = {https://arxiv.org/abs/2405.03446v2},
+  note = {Preprint citation verified here; do not infer a conference venue from this record.}
+}
+@misc{attacklm_dataset,
+  author = {{Veedubin}},
+  title = {{attacklm-dataset}},
+  url = {https://github.com/Veedubin/attacklm-dataset},
+  urldate = {2026-10-29},
+  note = {Aggregation repository. Preserve per-record upstream attribution and license; see TRAINING_PROVENANCE.json. Prepared-only in retained completed runs.}
+}
+@misc{ait_ads_2023,
+  author = {Landauer, Max and Skopik, Florian and Wurzenberger, Markus},
+  title = {{AIT Alert Data Set}},
+  year = {2023},
+  publisher = {Zenodo},
+  version = {1},
+  doi = {10.5281/zenodo.8263181},
+  url = {https://zenodo.org/records/8263181},
+  urldate = {2026-10-29},
+  note = {Experimental testbed alerts, including false positives. Phase-window labels are not per-alert maliciousness labels.}
+}
+@inproceedings{landauer2024ait_ads,
+  author = {Landauer, Max and Skopik, Florian and Wurzenberger, Markus},
+  title = {Introducing a New Alert Data Set for Multi-Step Attack Analysis},
+  booktitle = {Proceedings of the 17th Cyber Security Experimentation and Test Workshop},
+  year = {2024},
+  doi = {10.1145/3675741.3675748},
+  url = {https://doi.org/10.1145/3675741.3675748},
+  note = {Citation linked by the institutional Zenodo record. Publisher full text was not accessible during this audit.}
+}
+@misc{qwen36_35b_base,
+  author = {{Qwen Team}},
+  title = {{Qwen3.6-35B-A3B}},
+  url = {https://huggingface.co/Qwen/Qwen3.6-35B-A3B/tree/995ad96eacd98c81ed38be0c5b274b04031597b0},
+  urldate = {2026-10-29},
+  note = {Pinned fine-tuning base revision 995ad96eacd98c81ed38be0c5b274b04031597b0. Upstream pretraining corpus is outside the project fine-tuning dataset.}
+}
+
+@misc{attacklm_upstream_openassistant,
+  title = {{OpenAssistant}},
+  url = {https://huggingface.co/datasets/OpenAssistant/oasst1},
+  urldate = {2026-10-29},
+  note = {Upstream named by retained AttackLM record metadata; prepared-only here. Exact historical revision and full upstream rights were not independently re-established.}
+}
+
+@misc{attacklm_upstream_slimpajama,
+  title = {{SlimPajama}},
+  url = {https://huggingface.co/datasets/cerebras/SlimPajama-627B},
+  urldate = {2026-10-29},
+  note = {Upstream named by retained AttackLM record metadata; prepared-only here. Exact historical revision and full upstream rights were not independently re-established.}
+}
+
+@misc{attacklm_upstream_atomic_red_team,
+  title = {{atomic-red-team}},
+  url = {https://github.com/redcanaryco/atomic-red-team},
+  urldate = {2026-10-29},
+  note = {Upstream named by retained AttackLM record metadata; prepared-only here. Exact historical revision and full upstream rights were not independently re-established.}
+}
+
+@misc{attacklm_upstream_attacklm_synthetic,
+  title = {{attacklm-synthetic}},
+  url = {https://github.com/Veedubin/AttackLM},
+  urldate = {2026-10-29},
+  note = {Upstream named by retained AttackLM record metadata; prepared-only here. Exact historical revision and full upstream rights were not independently re-established.}
+}
+
+@misc{attacklm_upstream_metasploit_framework,
+  title = {{metasploit-framework}},
+  url = {https://github.com/rapid7/metasploit-framework},
+  urldate = {2026-10-29},
+  note = {Upstream named by retained AttackLM record metadata; prepared-only here. Exact historical revision and full upstream rights were not independently re-established.}
+}
+
+@misc{attacklm_upstream_mitre_atlas,
+  title = {{mitre-atlas}},
+  url = {https://github.com/mitre-atlas/atlas-data},
+  urldate = {2026-10-29},
+  note = {Upstream named by retained AttackLM record metadata; prepared-only here. Exact historical revision and full upstream rights were not independently re-established.}
+}
+
+@misc{attacklm_upstream_mitre_atlas_arsenal,
+  title = {{mitre-atlas-arsenal}},
+  url = {https://github.com/mitre-atlas/arsenal},
+  urldate = {2026-10-29},
+  note = {Upstream named by retained AttackLM record metadata; prepared-only here. Exact historical revision and full upstream rights were not independently re-established.}
+}
+
+@misc{attacklm_upstream_mitre_stockpile,
+  title = {{mitre-stockpile}},
+  url = {https://github.com/mitre/stockpile},
+  urldate = {2026-10-29},
+  note = {Upstream named by retained AttackLM record metadata; prepared-only here. Exact historical revision and full upstream rights were not independently re-established.}
+}
+
+@misc{attacklm_upstream_mordor,
+  title = {{mordor}},
+  url = {https://github.com/OTRF/Security-Datasets},
+  urldate = {2026-10-29},
+  note = {Upstream named by retained AttackLM record metadata; prepared-only here. Exact historical revision and full upstream rights were not independently re-established.}
+}
+
+@misc{attacklm_upstream_nist_sp800_61r3,
+  title = {{nist-sp800-61r3}},
+  url = {https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-61r3.pdf},
+  urldate = {2026-10-29},
+  note = {Upstream named by retained AttackLM record metadata; prepared-only here. Exact historical revision and full upstream rights were not independently re-established.}
+}
+
+@misc{attacklm_upstream_nvidia_garak,
+  title = {{nvidia-garak}},
+  url = {https://github.com/NVIDIA/garak},
+  urldate = {2026-10-29},
+  note = {Upstream named by retained AttackLM record metadata; prepared-only here. Exact historical revision and full upstream rights were not independently re-established.}
+}
+
+@misc{attacklm_upstream_promptfoo,
+  title = {{promptfoo}},
+  url = {https://github.com/promptfoo/promptfoo},
+  urldate = {2026-10-29},
+  note = {Upstream named by retained AttackLM record metadata; prepared-only here. Exact historical revision and full upstream rights were not independently re-established.}
+}
+
+@misc{attacklm_upstream_promptmap,
+  title = {{promptmap}},
+  url = {https://github.com/utkusen/promptmap},
+  urldate = {2026-10-29},
+  note = {Upstream named by retained AttackLM record metadata; prepared-only here. Exact historical revision and full upstream rights were not independently re-established.}
+}
+
+@misc{attacklm_upstream_sigma_hq,
+  title = {{sigma-hq}},
+  url = {https://github.com/SigmaHQ/sigma},
+  urldate = {2026-10-29},
+  note = {Upstream named by retained AttackLM record metadata; prepared-only here. Exact historical revision and full upstream rights were not independently re-established.}
+}
+
+@misc{attacklm_upstream_splunk_content,
+  title = {{splunk-content}},
+  url = {https://github.com/splunk/security_content},
+  urldate = {2026-10-29},
+  note = {Upstream named by retained AttackLM record metadata; prepared-only here. Exact historical revision and full upstream rights were not independently re-established.}
+}
+
+@misc{attacklm_upstream_the_stack_v2_permissive,
+  title = {{the-stack-v2-permissive}},
+  url = {https://huggingface.co/datasets/bigcode/the-stack-v2-0.3},
+  urldate = {2026-10-29},
+  note = {Upstream named by retained AttackLM record metadata; prepared-only here. Exact historical revision and full upstream rights were not independently re-established.}
+}
+
+@misc{attacklm_upstream_threathunter_playbook,
+  title = {{threathunter-playbook}},
+  url = {https://github.com/OTRF/ThreatHunter-Playbook},
+  urldate = {2026-10-29},
+  note = {Upstream named by retained AttackLM record metadata; prepared-only here. Exact historical revision and full upstream rights were not independently re-established.}
+}
+
+@techreport{nist_sp800_61r3,
+  author = {Nelson, Alexander and Rekhi, Sanjay and Souppaya, Murugiah and Scarfone, Karen},
+  title = {Incident Response Recommendations and Considerations for Cybersecurity Risk Management: A {CSF} 2.0 Community Profile},
+  institution = {National Institute of Standards and Technology},
+  number = {NIST SP 800-61 Rev. 3},
+  year = {2025},
+  month = apr,
+  doi = {10.6028/NIST.SP.800-61r3},
+  url = {https://csrc.nist.gov/pubs/sp/800/61/r3/final},
+  note = {Procedure reference for project-authored R3 workflows; not certification of derived labels}
+}
+
+@inproceedings{liu2025toolace,
+  author = {Liu, Weiwen and Huang, Xu and Zeng, Xingshan and others},
+  title = {{ToolACE}: Winning the Points of {LLM} Function Calling},
+  booktitle = {International Conference on Learning Representations},
+  year = {2025},
+  url = {https://proceedings.iclr.cc/paper_files/paper/2025/hash/663865ea167425c6c562cb0b6bcf76c7-Abstract-Conference.html}
+}
+
+@misc{team_ace_toolace,
+  author = {{Team-ACE}},
+  title = {{ToolACE} public dataset subset},
+  url = {https://huggingface.co/datasets/Team-ACE/ToolACE},
+  urldate = {2026-10-29},
+  note = {Apache-2.0; prepared auxiliary candidate only, excluded from SOC R3 core training; exact source SHA recorded in preparation ledger}
+}
+
+@techreport{nist_sp800_181r1,
+  author = {Petersen, Rodney and Santos, Danielle and Wetzel, Karen and Smith, Matthew and Witte, Gregory},
+  title = {Workforce Framework for Cybersecurity ({NICE} Framework)},
+  institution = {National Institute of Standards and Technology},
+  number = {NIST SP 800-181 Rev. 1},
+  year = {2020},
+  month = nov,
+  doi = {10.6028/NIST.SP.800-181r1},
+  url = {https://csrc.nist.gov/pubs/sp/800/181/r1/final},
+  note = {Role framework reference; current component identifiers are cited separately.}
+}
+
+@misc{nist_nice_components_220,
+  author = {{National Institute of Standards and Technology}},
+  title = {{NICE Framework Components}},
+  version = {2.2.0},
+  url = {https://csrc.nist.gov/csrc/media/Projects/cprt/documents/nice/v2-2-0_nf_components.json},
+  urldate = {2026-10-29},
+  note = {Pinned JSON SHA and project subset mapping in SOC_ROLE_MATRIX.json. Task alignment is not institutional certification.}
+}
+
+@techreport{enisa_ecsf_2022,
+  author = {{European Union Agency for Cybersecurity}},
+  title = {European Cybersecurity Skills Framework Role Profiles},
+  institution = {ENISA},
+  year = {2022},
+  month = sep,
+  doi = {10.2824/859537},
+  isbn = {978-92-9204-584-5},
+  url = {https://www.enisa.europa.eu/sites/default/files/publications/European%20Cybersecurity%20Skills%20Framework%20Role%20Profiles.pdf},
+  note = {CC-BY-4.0; Cyber Incident Responder profile includes SOC Analyst. Reference for project-authored scope, not a training-label certification.}
+}
+
+@misc{ait_lds_v2_2022,
+  author = {Landauer, Max and Skopik, Florian and Frank, Maximilian and Hotwagner, Wolfgang and Wurzenberger, Markus and Rauber, Andreas},
+  title = {{AIT Log Data Set V2.0}},
+  publisher = {Zenodo},
+  year = {2022},
+  version = {v2_0},
+  doi = {10.5281/zenodo.5789064},
+  url = {https://zenodo.org/records/5789064},
+  urldate = {2026-10-29},
+  note = {CC-BY-NC-SA-4.0; selected original log and provider-label members referenced remotely. No whole-archive checksum claim. Cite both associated papers below.}
+}
+
+@article{landauer2023maintainable,
+  author = {Landauer, Max and Skopik, Florian and Frank, Maximilian and Hotwagner, Wolfgang and Wurzenberger, Markus and Rauber, Andreas},
+  title = {Maintainable Log Datasets for Evaluation of Intrusion Detection Systems},
+  journal = {IEEE Transactions on Dependable and Secure Computing},
+  year = {2023},
+  volume = {20},
+  number = {4},
+  pages = {3466--3482},
+  doi = {10.1109/TDSC.2022.3201582},
+  url = {https://doi.org/10.1109/TDSC.2022.3201582},
+  note = {Official dataset-recommended citation; issue metadata confirmed against publisher-deposited Crossref record. Publisher full text was not inspected here.}
+}
+
+@article{landauer2021haveit,
+  author = {Landauer, Max and Skopik, Florian and Wurzenberger, Markus and Hotwagner, Wolfgang and Rauber, Andreas},
+  title = {Have it Your Way: Generating Customized Log Datasets With a Model-Driven Simulation Testbed},
+  journal = {IEEE Transactions on Reliability},
+  year = {2021},
+  month = mar,
+  volume = {70},
+  number = {1},
+  pages = {402--415},
+  doi = {10.1109/TR.2020.3031317},
+  url = {https://doi.org/10.1109/TR.2020.3031317},
+  note = {Official dataset-recommended testbed-method citation; not independent validation of project agent answers.}
+}
+
+@misc{cisa_kev_20261027,
+  author = {{Cybersecurity and Infrastructure Security Agency}},
+  title = {Known Exploited Vulnerabilities Catalog},
+  version = {2026.10.27},
+  url = {https://github.com/cisagov/kev-data/tree/30a09b6f3f7e2f03618cc8c95d212966d3c14e6e},
+  urldate = {2026-10-29},
+  note = {CC0-1.0; pinned snapshot of 1760 records. A catalog entry is not evidence that a local asset is installed, vulnerable or compromised. Exact file and derived-record hashes retained.}
+}
+
+@misc{mitre_attack_pinned_20261029,
+  author = {{The MITRE Corporation}},
+  title = {{ATT\&CK Enterprise STIX 2.1 Data}},
+  url = {https://github.com/mitre-attack/attack-stix-data/tree/c2494b29dd268c46a5d0ea0990553e4327cd2253},
+  urldate = {2026-10-29},
+  note = {Pinned source inventory and license in SOURCE_EXPANSION.json. CTI relationships are not independent incident investigations or proof of local compromise.}
+}
+
+@misc{cmu_cert_insider_2020,
+  author = {Lindauer, Brian},
+  title = {Insider Threat Test Dataset},
+  publisher = {Carnegie Mellon University},
+  year = {2020},
+  doi = {10.1184/R1/12841247.v1},
+  url = {https://doi.org/10.1184/R1/12841247.v1},
+  urldate = {2026-10-29},
+  note = {CC-BY-4.0. Institutional synthetic testbed. Provider answer key/checksums acquired; large log archives not downloaded and no training admission yet. SEI landing-page date differs from repository release date.}
+}
+
+@inproceedings{yang2024soc_measurement,
+  author = {Yang, Limin and Chen, Zhi and Wang, Chenkai and Zhang, Zhenning and Booma, Sushruth and Cao, Phuong and Adam, Constantin and Withers, Alexander and Kalbarczyk, Zbigniew and Iyer, Ravishankar K. and Wang, Gang},
+  title = {True Attacks, Attack Attempts, or Benign Triggers? An Empirical Measurement of Network Alerts in a Security Operations Center},
+  booktitle = {33rd USENIX Security Symposium},
+  year = {2024},
+  pages = {1525--1542},
+  publisher = {USENIX Association},
+  url = {https://www.usenix.org/conference/usenixsecurity24/presentation/yang-limin},
+  note = {Methodology/source candidate only. Restricted alert dataset requires author permission and has not been acquired or used for training.}
+}
+
+@misc{cisa_incident_advisories_2024,
+  author = {{Cybersecurity and Infrastructure Security Agency and partner authoring agencies}},
+  title = {Joint Cybersecurity Advisories {AA24-038A}, {AA23-061A} and {AA24-131A}},
+  year = {2024},
+  url = {https://www.cisa.gov/news-events/cybersecurity-advisories},
+  urldate = {2026-10-29},
+  note = {Individual official report URLs, snapshot SHA and sizes retained in SOURCE_EXPANSION.json. Original incident observations acquired; not yet transformed into validated training examples.}
+}
+
+@misc{cisa_blacksuit_royal_aa23_061a,
+  author = {{CISA and FBI}},
+  title = {{StopRansomware: BlackSuit (Royal) Ransomware, AA23-061A}},
+  year = {2024},
+  url = {https://www.cisa.gov/sites/default/files/2024-09/aa23-061a-stopransomware-blacksuit-royal-ransomware_5.pdf},
+  note = {Pinned PDF SHA256 44c1a388f6f513af80f34a042ff7b0777ef41cc512d1ca7dbf7df6e4451d41c8; pp. 22--24, Tables 18--23. Accessed 2026-10-29 KST. V5 selected training observations; project formatting, provider labels.}
+}
+
+@misc{cisa_volt_typhoon_aa24_038a,
+  author = {{CISA and joint advisory partners}},
+  title = {{PRC State-Sponsored Actors Compromise and Maintain Persistent Access to U.S. Critical Infrastructure, AA24-038A}},
+  year = {2024},
+  url = {https://www.cisa.gov/sites/default/files/2024-03/aa24-038a_csa_prc_state_sponsored_actors_compromise_us_critical_infrastructure_3.pdf},
+  note = {Pinned PDF SHA256 f90e5d955b131306453a7c2ced1efcf0618d3e0dfd6c6c181262319fab63339b; pp. 37--45, Tables 5--17. Accessed 2026-10-29 KST. V5 validation report, not used for gradient training.}
+}
+
+@misc{cisa_black_basta_aa24_131a,
+  author = {{CISA, FBI, HHS, and MS-ISAC}},
+  title = {{StopRansomware: Black Basta, AA24-131A}},
+  year = {2024},
+  url = {https://www.cisa.gov/sites/default/files/2024-05/aa24-131a-joint-csa-stopransomware-black-basta_1.pdf},
+  note = {Pinned PDF SHA256 0a9b0d2ff1a3e47654f5ff9e0a0398d65515a8e0237e7434c15974c0514b92f7; pp. 4--5, Tables 2--6. Accessed 2026-10-29 KST. At preparation this was the V5 final held-out report. Correction 2026-10-30: the 128-item final evaluation has since been consumed; not a fresh unseen test.}
+}
+
+% Additional SOC source candidates, reviewed 2026-10-30; not yet training inputs.
+@misc{kent2015lanl_multisource,
+  author = {Kent, Alexander D.},
+  title = {Comprehensive, Multi-Source Cyber-Security Events},
+  year = {2015},
+  publisher = {Los Alamos National Laboratory},
+  doi = {10.17021/1179829},
+  url = {https://csr.lanl.gov/data/cyber1/},
+  note = {Provider data description and selected red-team event labels; accessed 2026-10-30. Candidate only, no logs acquired in this review.}
+}
+
+@misc{optc_fivedirections_2019,
+  author = {{Five Directions}},
+  title = {Operationally Transparent Cyber (OpTC) Data Release},
+  year = {2019},
+  url = {https://github.com/FiveDirections/OpTC-data/tree/5b108604f11f767aa11ea79ff827595f3fad15fd},
+  note = {DARPA-funded testbed release; README, red-team ground truth and errata. Collection in fall 2019; repository commit pinned, accessed 2026-10-30. Candidate only.}
+}
+
+@misc{splunk_botsv3,
+  author = {{Splunk}},
+  title = {Boss of the SOC (BOTS) Dataset Version 3},
+  year = {2020},
+  url = {https://github.com/splunk/botsv3/tree/5f556f8b4c4ce0bd7498e642fdb52801e89bee0f},
+  note = {CC0-1.0 repository; release announcement dated 2020-03-18. Official question/answer set offered separately by request. Accessed 2026-10-30; candidate only, not acquired or trained.}
+}
+
+% Additional raw-log sources reviewed 2026-10-30; no training admission.
+@misc{karim2024linux_apt_data,
+  author = {Karim, Sohaib},
+  title = {{Linux-APT-Dataset-2024}},
+  year = {2024},
+  publisher = {Zenodo},
+  doi = {10.5281/zenodo.10685642},
+  url = {https://zenodo.org/records/10685642},
+  note = {CC BY 4.0 metadata; actual logs from emulated attacks. Two CSV files (887 rows) and rule XML checked; not adjudicated training dialogues.}
+}
+@article{karim2024linux_apt_paper,
+  author = {Karim, Syed Sohaib and Afzal, Mehreen and Iqbal, Waseem and Al Abri, Dawood},
+  title = {Advanced Persistent Threat (APT) and intrusion detection evaluation dataset for linux systems 2024},
+  journal = {Data in Brief},
+  volume = {54},
+  pages = {110290},
+  year = {2024},
+  doi = {10.1016/j.dib.2024.110290}
+}
+@misc{lanvin2026dedale_data,
+  author = {Lanvin, Maxime and Majorczyk, Frederic},
+  title = {{DEDALE: Dataset for Evaluating Detection of APT among Logs and Events}},
+  publisher = {Recherche Data Gouv},
+  year = {2026},
+  doi = {10.57745/Y5JLDG},
+  url = {https://dedale.inria.fr/download.html},
+  note = {Repository V2.1 inspected 2026-10-30; CC BY 4.0 terms. Author-recommended temporal train/test separation retained. Follow-up selected seven hourly raw members: 6,188,928 rows, 5,581 exact label links, CRC and seven provider raw JSONL MD5 checks. Not whole-archive validation, independent label certification, or new training admission.}
+}
+@inproceedings{lanvin2026dedale_paper,
+  author = {Lanvin, Maxime and Majorczyk, Frederic},
+  title = {{Get Out of DEDALE with RESCOUSSE: A New Dataset and Testbed for Evaluating the Detection of APT Attacks Among Network and System Logs}},
+  booktitle = {Computer Security. ESORICS 2025 International Workshops},
+  series = {Lecture Notes in Computer Science},
+  volume = {16232},
+  pages = {3--23},
+  year = {2026},
+  doi = {10.1007/978-3-032-16092-8_1},
+  note = {Publisher first online 2026-05-01; workshops associated with ESORICS 2025, not claimed main-conference paper.}
+}
+@misc{bendl2023ctu_sme11,
+  author = {Bendl, Stepan and Valeros, Veronica and Garcia, Sebastian},
+  title = {{CTU-SME-11: a labeled dataset with real benign and malicious network traffic mimicking a small medium-size enterprise environment}},
+  publisher = {Zenodo},
+  year = {2023},
+  doi = {10.5281/zenodo.7958259},
+  url = {https://zenodo.org/records/7958259},
+  note = {University dataset associated with a masters thesis, not asserted peer-reviewed publication. CC BY 4.0 metadata; 11-device summary checked, raw archives not acquired.}
+}
+@misc{valeros2024hornet65_data,
+  author = {Valeros, Veronica and Garcia, Sebastian},
+  title = {{CTU Hornet 65 Niner: A Network Dataset of Geographically Distributed Low-Interaction Honeypots}},
+  publisher = {Mendeley Data},
+  year = {2024},
+  doi = {10.17632/nt4p9zsv5k.1},
+  url = {https://data.mendeley.com/datasets/nt4p9zsv5k/1},
+  note = {CC BY 4.0 dataset record. Real Internet observations; not independently adjudicated compromise labels. Raw file verification pending.}
+}
+@article{valeros2025hornet65_paper,
+  author = {Valeros, Veronica and Garcia, Sebastian},
+  title = {{CTU Hornet 65 Niner: A network dataset of geographically distributed low-interaction honeypots}},
+  journal = {Data in Brief},
+  volume = {58},
+  pages = {111261},
+  year = {2025},
+  doi = {10.1016/j.dib.2024.111261}
+}
+@misc{anand2026auditbench,
+  author = {Anand, Aniket and Hou, Yiwei and Fields, Daniel and Kantchelian, Alex and Tao, David and Thomas, Kurt and Ho, Grant},
+  title = {Benchmarking and Exploring the Capabilities of LLMs for Attack Investigations},
+  year = {2026},
+  doi = {10.48550/arXiv.2606.10281},
+  url = {https://arxiv.org/abs/2606.10281v2},
+  note = {Preprint v2, 2026-09-26; peer-reviewed acceptance not verified. Repository 369ad441f2876245d0db19990c77ccbcb74a0a3a metadata checked; explicit data license not found, no training admission.}
+}
+
+@misc{wazuh452_queue_rules,
+  author = {{Wazuh}},
+  title = {Wazuh v4.5.2 agent queue rules 201--205},
+  url = {https://github.com/wazuh/wazuh/blob/v4.5.2/ruleset/rules/0016-wazuh_rules.xml},
+  urldate = {2026-10-30},
+  note = {Versioned source checked against Linux-APT queue records; not independent loss or recovery evidence.}
+}
+@misc{wazuh_queue_mechanisms,
+  author = {{Wazuh}},
+  title = {Queuing mechanisms},
+  url = {https://documentation.wazuh.com/current/user-manual/manager/wazuh-server-queue.html},
+  urldate = {2026-10-30},
+  note = {Current official documentation; source-era rule semantics checked separately against v4.5.2.}
+}
+@misc{mitre_attack_flow_corpus_pinned,
+  author = {{MITRE Center for Threat-Informed Defense}},
+  title = {Attack Flow corpus and language definitions},
+  year = {2026},
+  url = {https://github.com/center-for-threat-informed-defense/attack-flow/tree/6c26db9bbb34fcfd655f4fa7edfaa5a018c108ae},
+  note = {Accessed 2026-10-30 KST. Pinned commit; 41 local AFB blobs verified. Apache-2.0. Source scope includes 25 incidents, not 41 independent incidents.}
+}
+
+@techreport{foxit_fontana_2020,
+  author = {{Fox-IT}},
+  title = {Project Fontana: Rapport van bevindingen},
+  institution = {Fox-IT; published by Maastricht University with university response},
+  year = {2020},
+  url = {https://www.maastrichtuniversity.nl/nl/file/foxitrapportreactieuniversiteitmaastrichtnl10-02pdf},
+  note = {Accessed 2026-10-30 KST. Follow-up source review of 18 actions and 4 conditions: PDF pages 21, 25--29, 31, 33--34, 36 visually inspected. SHA256 7fd88a9d0d5860b8477b9ac1edc8f2e4e8c1ef2d9fd1bfdf4fe59af7fa32a5ab. Earlier review covered pages 27--28 only. This is a project source comparison, not a full report audit, official label certification, or training-license determination.}
+}
+
+@misc{dedale_labeling_pinned_2025,
+  author = {Lanvin, Maxime and Majorczyk, Frederic},
+  title = {DEDALE labeling tools and ground-truth references},
+  year = {2025},
+  url = {https://gitlab.inria.fr/mlanvin/dedale_labeling/-/tree/f148722eb5908fc17841dc3c8be1591c5c3e59a6},
+  note = {Accessed 2026-10-30 KST. 14 selected file blobs verified. License conflict: root LICENSE.txt MIT, system/network READMEs GPLv3. Inspected only; no source reuse or distribution. Dataset CC BY 4.0 is separate.}
+}
+
+@manual{suricata_708_eve_reference,
+  author = {{Open Information Security Foundation}},
+  title = {Suricata 7.0.8: Eve JSON Output},
+  url = {https://docs.suricata.io/en/suricata-7.0.8/output/eve/eve-json-output.html},
+  note = {Accessed 2026-10-30 KST. Field semantics reference only, not evidence of the DEDALE engine version or configuration.}
+}
+
+@manual{microsoft_sysmon_event3_reference,
+  author = {{Microsoft Sysinternals}},
+  title = {Sysmon: Event ID 3 Network connection},
+  url = {https://learn.microsoft.com/en-us/sysinternals/downloads/sysmon},
+  note = {Accessed 2026-10-30 KST. Event semantics only; absence from provided malicious labels does not establish that a sensor is disabled.}
+}
+
+@misc{rescousse_pinned_configuration,
+  author = {Lanvin, Maxime and Majorczyk, Frederic},
+  title = {RESCOUSSE testbed: pinned logging and network configuration references},
+  year = {2025},
+  url = {https://gitlab.inria.fr/mlanvin/rescousse/-/tree/ba47b61ed577d2854fb2c1ebb5868652836eb88f},
+  note = {Accessed 2026-10-30 KST. 11 selected file blobs verified. GPLv3 reference source, not incorporated or executed. Exact acquisition deployment revision not established. This is separate from the dedale_labeling license conflict.}
+}
+
+@manual{zeek_710_conn,
+  author = {{The Zeek Project}},
+  title = {Book of Zeek v7.1.0: conn.log},
+  url = {https://docs.zeek.org/en/v7.1.0/logs/conn.html},
+  urldate = {2026-10-30},
+  note = {Field and UID semantics reference; not proof of the DEDALE acquisition engine version or a security verdict.}
+}
+
+@manual{zeek_710_tsv,
+  author = {{The Zeek Project}},
+  title = {Book of Zeek v7.1.0: Log Formats and Inspection},
+  url = {https://docs.zeek.org/en/v7.1.0/log-formats.html},
+  urldate = {2026-10-30},
+  note = {TSV header and unset-value semantics used in original-versus-labeled data comparison.}
+}
+
+@misc{zeek_710_ntp_source,
+  author = {{The Zeek Project}},
+  title = {Zeek v7.1.0 NTP logging implementation},
+  url = {https://github.com/zeek/zeek/blob/v7.1.0/scripts/base/protocols/ntp/main.zeek},
+  urldate = {2026-10-30},
+  note = {Reference only, no source reuse. SHA256 03302cf555f5b670ab5c02b5dd2cf864a4f35d5a9ea08d421cf6e955064e44c8. Capture time and packet-declared transmit time remain distinct.}
+}
+
+@techreport{rfc5905_ntpv4,
+  author = {Mills, David and Martin, Jim and Burbank, Jack and Kasch, William},
+  title = {Network Time Protocol Version 4: Protocol and Algorithms Specification},
+  institution = {Internet Engineering Task Force},
+  number = {RFC 5905},
+  year = {2010},
+  url = {https://www.rfc-editor.org/rfc/rfc5905.html},
+  note = {Accessed 2026-10-30 KST. Sections 7.3--7.4: stratum 0, INIT and invalid KoD timestamps. Observed NTP headers are not a verified clock correction.}
+}
+
+@manual{zeek_710_capture_loss,
+  author = {{The Zeek Project}},
+  title = {Book of Zeek v7.1.0: capture-loss policy and field definitions},
+  url = {https://docs.zeek.org/en/v7.1.0/scripts/policy/misc/capture-loss.zeek.html},
+  urldate = {2026-10-30},
+  note = {ACK-based measurement and Too Little Traffic semantics. Reference only; actual Hornet acquisition engine version is not established. Zero estimator values are not proof of complete capture.}
+}
+
+@article{landauer2026camlds,
+  author = {Landauer, Max and Hotwagner, Wolfgang and Boenke, Thorina and Skopik, Florian and Wurzenberger, Markus},
+  title = {CAM-LDS: Cyber Attack Manifestations for Automatic Interpretation of System Logs and Security Alerts},
+  journal = {International Journal of Information Security},
+  year = {2026},
+  volume = {25},
+  eid = {148},
+  doi = {10.1007/s10207-026-01318-x},
+  url = {https://link.springer.com/article/10.1007/s10207-026-01318-x},
+  note = {Research testbed; source credibility is not certification of individual labels or deployment performance.}
+}
+
+@misc{camlds_v1_data,
+  author = {Landauer, Max and Hotwagner, Wolfgang and Boenke, Thorina and Skopik, Florian and Wurzenberger, Markus},
+  title = {Cyber Attack Manifestations - Log Data Set (CAM-LDS), version 1},
+  year = {2026},
+  doi = {10.5281/zenodo.18390561},
+  url = {https://zenodo.org/records/18390561},
+  note = {Version underlying the pinned 990 queries. Compared filtered step inventories against v2; five differing files verified, not whole archive MD5.}
+}
+
+@misc{camlds_v2_data,
+  author = {Landauer, Max and Hotwagner, Wolfgang and Boenke, Thorina and Skopik, Florian and Wurzenberger, Markus},
+  title = {Cyber Attack Manifestations - Log Data Set (CAM-LDS), version 2},
+  year = {2026},
+  doi = {10.5281/zenodo.18861762},
+  url = {https://zenodo.org/records/18861762},
+  note = {Accessed 2026-10-30 KST. CC BY 4.0. Selected members verified, not whole archive checksum.}
+}
+
+@misc{camlds_pinned_artifacts,
+  author = {{AIT AECID}},
+  title = {LLM-based interpretation of cyber attack manifestations: pinned artifacts},
+  year = {2026},
+  url = {https://github.com/ait-aecid/attack-manifestations-interpretation/tree/42bbd2cf8409f64a1e6c8fc936c91725e8c558b2},
+  note = {Five Git blobs verified. Root GPLv3 separate from Zenodo data license. Queries use data v1: 990 repetitions, 198 steps, 393 distinct prompts. Upstream model responses not downloaded or treated as ground truth.}
+}
+
+@inproceedings{highnam2021beth,
+  author = {Highnam, Kate and Arulkumaran, Kai and Hanif, Zachary and Jennings, Nicholas R.},
+  title = {BETH Dataset: Real Cybersecurity Data for Unsupervised Anomaly Detection Research},
+  booktitle = {Conference on Applied Machine Learning for Information Security},
+  year = {2021},
+  url = {https://ceur-ws.org/Vol-3095/paper1.pdf},
+  note = {Paper CC BY 4.0. Tables 3 and 4 distinguish process uptime from DNS UTC timestamps.}
+}
+
+@misc{beth_dataset_v3,
+  author = {Highnam, Kate and Arulkumaran, Kai and Hanif, Zachary and Jennings, Nicholas R.},
+  title = {BETH Dataset, version 3},
+  year = {2021},
+  url = {https://www.kaggle.com/datasets/katehighnam/beth-dataset},
+  note = {Accessed 2026-10-30 KST. Provider API states CC0 Public Domain. Selected CSV hashes, sizes and available ZIP CRC verified; provider cryptographic checksums unavailable in inspected metadata.}
+}
+
+@article{calvo2025rbd24,
+  author = {Calvo, Albert and Escuder, Santiago and Ortiz, Nil and Escrig, Josep and Compastie, Maxime},
+  title = {RBD24: A labelled dataset with risk activities using log application data},
+  journal = {Computers and Security},
+  volume = {150},
+  pages = {104290},
+  year = {2025},
+  doi = {10.1016/j.cose.2024.104290},
+  url = {https://doi.org/10.1016/j.cose.2024.104290},
+  note = {Publication metadata confirmed; publisher full text not retrieved in this review.}
+}
+
+@misc{rbd24_dataset,
+  author = {Calvo, Albert and Escuder, Santiago and Ortiz, Nil and Escrig, Josep and Compastie, Maxime},
+  title = {RBD24 - Risk Activities Dataset 2024},
+  year = {2024},
+  doi = {10.5281/zenodo.13787591},
+  url = {https://zenodo.org/records/13787591},
+  note = {Accessed 2026-10-30 KST. CC BY 4.0. Metadata and twelve-file inventory checked; Parquet rows not acquired or verified.}
+}
+
+% Additional official sources: failure-driven and full SOC role coverage
+@misc{soc_source_crs_20261101,
+  author = {{coreruleset}},
+  title = {coreruleset/coreruleset source snapshot},
+  year = {2026},
+  url = {https://github.com/coreruleset/coreruleset/tree/ca679721f6df320c88b81cdb52aea68588ff2859},
+  note = {Accessed 2026-11-01 KST; revision ca679721f6df320c88b81cdb52aea68588ff2859; Apache-2.0}
+}
+
+@misc{soc_source_wazuh_20261101,
+  author = {{wazuh}},
+  title = {wazuh/wazuh source snapshot},
+  year = {2026},
+  url = {https://github.com/wazuh/wazuh/tree/f470ad7db717b18db7feeed568949643698f0f34},
+  note = {Accessed 2026-11-01 KST; revision f470ad7db717b18db7feeed568949643698f0f34; GPL-2.0 with bundled notices; preserve per-file conditions}
+}
+
+@misc{soc_source_suricata_verify_20261101,
+  author = {{OISF}},
+  title = {OISF/suricata-verify source snapshot},
+  year = {2026},
+  url = {https://github.com/OISF/suricata-verify/tree/5ee54126be5161695200b7bbb714d3b354ee6880},
+  note = {Accessed 2026-11-01 KST; revision 5ee54126be5161695200b7bbb714d3b354ee6880; MIT; metadata reference only this wave}
+}
+
+@misc{soc_source_modsecurity_docs_20261101,
+  author = {{owasp-modsecurity}},
+  title = {owasp-modsecurity/documentation source snapshot},
+  year = {2026},
+  url = {https://github.com/owasp-modsecurity/documentation/tree/9946c9f60ed247179f57a602e79c0ef045dc3d3c},
+  note = {Accessed 2026-11-01 KST; revision 9946c9f60ed247179f57a602e79c0ef045dc3d3c; Apache-2.0}
+}
+
+@misc{soc_source_nist_controls_20261101,
+  author = {{usnistgov}},
+  title = {usnistgov/oscal-content source snapshot},
+  year = {2026},
+  url = {https://github.com/usnistgov/oscal-content/tree/f0de6d8d8c059d374f15e0ae07508d82e370fc1d},
+  note = {Accessed 2026-11-01 KST; revision f0de6d8d8c059d374f15e0ae07508d82e370fc1d; CC0-1.0 with NIST disclaimer}
+}
+
+@misc{soc_source_cisa_counter_20261101,
+  author = {{cisagov}},
+  title = {cisagov/coun7er source snapshot},
+  year = {2026},
+  url = {https://github.com/cisagov/coun7er/tree/811fa2f5c283cea53124909910409359d1693dc1},
+  note = {Accessed 2026-11-01 KST; revision 811fa2f5c283cea53124909910409359d1693dc1; MIT, preserve ATT&CK attribution and provider disclaimer; procedures are not successful incident outcomes}
+}
+
+@techreport{CERTFR_2025_CTI_009,
+  author = {{ANSSI / CERT-FR}},
+  institution = {ANSSI},
+  title = {Houken: Seeking a path by living on the edge with zero-days},
+  year = {2025},
+  number = {CERTFR-2025-CTI-009},
+  url = {https://cert.cyber.gouv.fr/cti/CERTFR-2025-CTI-009/},
+  note = {Official report retrieved 2026-11-01 KST; reuse conditions and training admission pending}
+}
+
+@techreport{CERTFR_2025_CTI_007,
+  author = {{ANSSI / CERT-FR}},
+  institution = {ANSSI},
+  title = {Targeting and compromise of French entities using the APT28 intrusion set},
+  year = {2025},
+  number = {CERTFR-2025-CTI-007},
+  url = {https://cert.cyber.gouv.fr/cti/CERTFR-2025-CTI-007/},
+  note = {Official report retrieved 2026-11-01 KST; reuse conditions and training admission pending}
+}
+
+@techreport{CERTFR_2026_CTI_005,
+  author = {{ANSSI / CERT-FR}},
+  institution = {ANSSI},
+  title = {Targeting and Compromise of French Entities Using the Turla Intrusion Set},
+  year = {2026},
+  number = {CERTFR-2026-CTI-005},
+  url = {https://cert.cyber.gouv.fr/cti/CERTFR-2026-CTI-005/},
+  note = {Official report retrieved 2026-11-01 KST; reuse conditions and training admission pending}
+}
+
+@techreport{CERTFR_2026_CTI_008,
+  author = {{ANSSI / CERT-FR}},
+  institution = {ANSSI},
+  title = {Violations de donnees applicatives: Retour experience du CERT-FR},
+  year = {2026},
+  number = {CERTFR-2026-CTI-008},
+  url = {https://cert.cyber.gouv.fr/cti/CERTFR-2026-CTI-008/},
+  note = {Official report retrieved 2026-11-01 KST; reuse conditions and training admission pending}
+}
+
+@misc{wu_excytin_source_20261101,
+  author = {Wu, Yiran and Velazco, Mauricio and Zhao, Andrew and Melendez Lujan, Manuel Raul and others},
+  title = {ExCyTIn-Bench: Evaluating LLM agents on Cyber Threat Investigation},
+  year = {2025},
+  doi = {10.48550/arXiv.2507.14201},
+  url = {https://arxiv.org/abs/2507.14201},
+  note = {Microsoft Research and author repository list ICML 2026 acceptance. Retrieved ACESEvals artifact has 1017 questions, distinct from the updated paper count of 7542. Simulated Azure telemetry and graph-generated questions; accessed 2026-11-01 KST.}
+}
+
+@misc{microsoft_aces_snapshot_20261101,
+  author = {{Microsoft}},
+  title = {ACESEvals: ExCyTIn and SABER-Sim defensive task source snapshot},
+  year = {2026},
+  url = {https://github.com/microsoft/ACESEvals/tree/2c76fbdea415d6fa6a87bbad846686fefd6ee9bb},
+  note = {Pinned revision 2c76fbdea415d6fa6a87bbad846686fefd6ee9bb; MIT and NOTICE preserved. Provider simulations and generated questions are not project-validated training gold.}
+}
+
+@misc{excytin_dataset_snapshot_20261101,
+  author = {Mudgerikar, Anand and collaborators},
+  title = {ExCyTIn-Bench source dataset and transparency note},
+  year = {2026},
+  url = {https://huggingface.co/datasets/anandmudgerikar/excytin-bench/tree/8bc9ce1f97f8a6880c815dfba76d88651ddb761a},
+  note = {Dataset card CDLA-Permissive-2.0; framework transparency note MIT. Selected 32 CSV members by HTTP Range, not a complete archive acquisition. Preserved source-member hashes and physical CSV line references.}
+}
+
+@misc{aureille_agentic_pcap_snapshot_20261101,
+  author = {Aureille, Matthieu and Fesl, Jan},
+  title = {Agentic LLMs for Network Attack Detection},
+  year = {2026},
+  url = {https://huggingface.co/datasets/maureille/agentic-pcap/tree/54ce8ca45a3fe2566d3b0daa54941427ab642797},
+  note = {Version 1.0.0; revision 54ce8ca45a3fe2566d3b0daa54941427ab642797; experimental artifacts CC BY 4.0. Manuscript submitted per authors; acceptance not verified. Selected 44 research-model traces only, excluded from project training and transfer.}
+}
+
+
+@misc{splunk_attack_data_20261101,
+  author = {{Splunk Threat Research Team}},
+  title = {{Attack Data: curated datasets from controlled attack environments}},
+  url = {https://github.com/splunk/attack_data},
+  urldate = {2026-11-01},
+  version = {f08d6815063ceabc82b297dcf55c930dd1cc4a68},
+  note = {Apache-2.0. 1231 complete pinned recording files acquired; 1217 cleaned. Scenario metadata is not a per-event expert verdict. Training/quality not established by acquisition.}
+}
+
+@misc{otrf_security_datasets_review_20261101,
+  author = {{Open Threat Research Forge}},
+  title = {{Security Datasets: local source review, rights clarification pending}},
+  url = {https://github.com/OTRF/Security-Datasets},
+  urldate = {2026-11-01},
+  version = {d9d40ef123d2c87d5d3df28c96bcab4f0faccc87},
+  note = {LICENSE and README badge state MIT, README footer states GPL-3.0. All acquired OTRF recordings and derivatives excluded from the transferred joint training-preparation bundle. Not used in training.}
+}
+
+@misc{microsoft_cti_realm_20261101,
+  author = {{Microsoft}},
+  title = {{CTI-REALM: Cyber Threat Intelligence Detection Rule Development Benchmark}},
+  url = {https://github.com/microsoft/ACESEvals/tree/main/domains/cti_realm},
+  urldate = {2026-11-01},
+  version = {2c76fbdea415d6fa6a87bbad846686fefd6ee9bb},
+  note = {MIT repository evaluation definitions: 50 unique tasks; 25-task variant is a subset. External Hugging Face telemetry and third-party report reuse rights unverified; not acquired or trained here.}
+}

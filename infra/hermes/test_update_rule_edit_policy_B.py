@@ -1,0 +1,313 @@
+import importlib.util
+import json
+from pathlib import Path
+import sqlite3
+import tempfile
+import unittest
+from unittest import mock
+from unittest.mock import patch
+
+SPEC = importlib.util.spec_from_file_location('policy_patch', Path(__file__).with_name('update_rule_edit_policy_B.py'))
+m = importlib.util.module_from_spec(SPEC)
+SPEC.loader.exec_module(m)
+
+
+class PolicyPatchTest(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.root = Path(self.tmp.name)
+        self.data = self.root / 'data'
+        self.data.mkdir()
+        (self.data / 'cron').mkdir()
+        (self.data / 'sessions').mkdir()
+        self.backup = self.root / 'backups'
+        self.backup.mkdir(mode=0o700)
+        self.old = m.START + '\nold policy\n' + m.END
+        self.new = m.START + '\nnew policy propose_rule_edit\n' + m.END
+        self.source = self.root / 'source.md'
+        self.source.write_text('source prefix\n' + self.new + '\nsource suffix')
+        (self.data / 'SOUL.md').write_text('persona\n' + self.old + '\nother policy')
+        jobs = {'jobs': [{'name': 'soc-alert-watch', 'id': 'preserved', 'enabled': True,
+                         'prompt': 'Check. ' + m.OLD_CRON + ' propose_service_action. End.'}],
+                'updated_at': 'unchanged'}
+        (self.data / 'cron/jobs.json').write_text(json.dumps(jobs, indent=2))
+        mirror = {'meta': 'version1', 'channel-a': {'session_id': 's1', 'platform': 'mattermost'}}
+        (self.data / 'sessions/sessions.json').write_text(json.dumps(mirror))
+        db = sqlite3.connect(self.data / 'state.db')
+        db.executescript('''
+          CREATE TABLE sessions(id TEXT PRIMARY KEY,system_prompt_hash TEXT,system_prompt TEXT,history TEXT);
+          CREATE TABLE system_prompts(hash TEXT PRIMARY KEY,prompt TEXT NOT NULL);
+          CREATE TABLE gateway_routing(scope TEXT,session_key TEXT,entry_json TEXT,updated_at REAL);
+          CREATE TABLE session_turn_leases(conversation_id TEXT PRIMARY KEY,holder TEXT,acquired_at REAL,expires_at REAL);
+          CREATE TABLE messages(id INTEGER PRIMARY KEY,message TEXT);
+        ''')
+        prompt = 'history prompt prefix\n' + self.old + '\nhistory prompt suffix'
+        self.old_hash = m.sha(prompt.encode())
+        db.execute('INSERT INTO system_prompts VALUES(?,?)', (self.old_hash, prompt))
+        db.execute('INSERT INTO sessions VALUES(?,?,NULL,?)', ('s1', self.old_hash, 'unchanged'))
+        db.execute('INSERT INTO gateway_routing VALUES(?,?,?,?)',
+                   ('/opt/data/sessions', 'channel-a', json.dumps(mirror['channel-a']), 17.0))
+        db.execute('INSERT INTO messages VALUES(1,?)', ('tool history and conversation',))
+        db.commit()
+        db.close()
+
+    def update(self, **kwargs):
+        return m.update(self.data, self.source, self.backup,
+                        stopped_check=lambda: ('same', 'stopped', 'unchanged'), **kwargs)
+
+    def logical_db(self):
+        with sqlite3.connect(self.data / 'state.db') as db:
+            return list(db.iterdump())
+
+    def test_preserves_history_and_null_inline_and_old_blob(self):
+        old_jobs = (self.data / 'cron/jobs.json').read_bytes()
+        old_mirror = (self.data / 'sessions/sessions.json').read_bytes()
+        result = self.update()
+        self.assertEqual(result['sessions'], 1)
+        self.assertTrue(result['unrelated_tables_unchanged'])
+        self.assertEqual((self.data / 'SOUL.md').read_text(), 'persona\n' + self.new + '\nother policy')
+        self.assertEqual((self.data / 'cron/jobs.json').read_bytes(), old_jobs.replace(m.OLD_CRON.encode(), m.NEW_CRON.encode()))
+        self.assertEqual((self.data / 'sessions/sessions.json').read_bytes(), old_mirror)
+        with sqlite3.connect(self.data / 'state.db') as db:
+            row = db.execute('SELECT system_prompt_hash,system_prompt,history FROM sessions').fetchone()
+            self.assertNotEqual(row[0], self.old_hash)
+            self.assertEqual(row[1:], (None, 'unchanged'))
+            self.assertEqual(db.execute('SELECT count(*) FROM system_prompts').fetchone(), (2,))
+            self.assertEqual(db.execute('SELECT message FROM messages').fetchone(), ('tool history and conversation',))
+        self.assertEqual(Path(result['backup_dir']).stat().st_mode & 0o777, 0o700)
+        self.assertTrue(all(p.stat().st_mode & 0o777 == 0o600 for p in Path(result['backup_dir']).iterdir()))
+        # Reapplying the same policy is harmless and does not add more blobs.
+        self.update()
+        with sqlite3.connect(self.data / 'state.db') as db:
+            self.assertEqual(db.execute('SELECT count(*) FROM system_prompts').fetchone(), (2,))
+
+    def test_dry_run_does_not_patch_or_create_backup(self):
+        before = self.logical_db()
+        soul = (self.data / 'SOUL.md').read_bytes()
+        self.assertTrue(self.update(dry_run=True)['dry_run'])
+        self.assertEqual(self.logical_db(), before)
+        self.assertEqual((self.data / 'SOUL.md').read_bytes(), soul)
+        self.assertEqual(list(self.backup.iterdir()), [])
+
+    def disabled_management_cron(self):
+        jobs = {'jobs': [{'name': 'soc-alert-watch', 'id': 'preserved', 'enabled': False,
+                         'prompt': 'LLM management policy; investigate events and verify outcomes.'}],
+                'updated_at': 'unchanged', 'metadata': {'format': 'retain exact bytes'}}
+        raw = (json.dumps(jobs, indent=4) + '\n\n').encode()
+        (self.data / 'cron/jobs.json').write_bytes(raw)
+        return raw
+
+    def test_preserve_cron_updates_policy_without_rewriting_disabled_management_job(self):
+        original = self.disabled_management_cron()
+        result = self.update(preserve_cron=True)
+        self.assertEqual(result['sessions'], 1)
+        self.assertTrue(result['unrelated_tables_unchanged'])
+        self.assertEqual((self.data / 'cron/jobs.json').read_bytes(), original)
+        self.assertEqual((self.data / 'SOUL.md').read_text(), 'persona\n' + self.new + '\nother policy')
+        with sqlite3.connect(self.data / 'state.db') as db:
+            current = db.execute('SELECT p.prompt FROM sessions s JOIN system_prompts p ON p.hash=s.system_prompt_hash').fetchone()[0]
+            self.assertIn(self.new, current)
+            self.assertNotIn(self.old, current)
+            self.assertEqual(db.execute('SELECT prompt FROM system_prompts WHERE hash=?', (self.old_hash,)).fetchone()[0],
+                             'history prompt prefix\n' + self.old + '\nhistory prompt suffix')
+        self.assertEqual((Path(result['backup_dir']) / 'jobs.json').read_bytes(), original)
+
+    def test_missing_cron_anchor_still_refuses_by_default_before_mutation(self):
+        original = self.disabled_management_cron()
+        before_db = self.logical_db()
+        before_soul = (self.data / 'SOUL.md').read_bytes()
+        before_mirror = (self.data / 'sessions/sessions.json').read_bytes()
+        with self.assertRaisesRegex(RuntimeError, 'cron policy anchor ambiguous'):
+            self.update()
+        self.assertEqual(self.logical_db(), before_db)
+        self.assertEqual((self.data / 'SOUL.md').read_bytes(), before_soul)
+        self.assertEqual((self.data / 'sessions/sessions.json').read_bytes(), before_mirror)
+        self.assertEqual((self.data / 'cron/jobs.json').read_bytes(), original)
+        self.assertEqual(list(self.backup.iterdir()), [])
+
+    def test_preserve_cron_and_management_prompt_are_rejected_before_any_change(self):
+        original = self.disabled_management_cron()
+        before_db = self.logical_db()
+        before_soul = (self.data / 'SOUL.md').read_bytes()
+        before_mirror = (self.data / 'sessions/sessions.json').read_bytes()
+        prompt_file = self.root / 'prompt'
+        prompt_file.write_text('LLM management policy. ' * 10)
+        with self.assertRaisesRegex(RuntimeError, 'preserve[_-]cron'):
+            self.update(preserve_cron=True, management_prompt=prompt_file)
+        self.assertEqual(self.logical_db(), before_db)
+        self.assertEqual((self.data / 'SOUL.md').read_bytes(), before_soul)
+        self.assertEqual((self.data / 'sessions/sessions.json').read_bytes(), before_mirror)
+        self.assertEqual((self.data / 'cron/jobs.json').read_bytes(), original)
+        self.assertEqual(list(self.backup.iterdir()), [])
+
+    def test_live_lease_refuses_every_change(self):
+        with sqlite3.connect(self.data / 'state.db') as db:
+            db.execute('INSERT INTO session_turn_leases VALUES(?,?,?,?)', ('s1', 'agent', 1, 1e20))
+        before = self.logical_db()
+        with self.assertRaisesRegex(RuntimeError, 'active session lease'):
+            self.update()
+        self.assertEqual(self.logical_db(), before)
+        self.assertEqual(list(self.backup.iterdir()), [])
+
+    def test_mirror_mismatch_refuses_every_change(self):
+        (self.data / 'sessions/sessions.json').write_text(json.dumps({'x': {'platform': 'mattermost', 'session_id': 'other'}}))
+        with self.assertRaisesRegex(RuntimeError, 'routing and mirror'):
+            self.update()
+        self.assertEqual(list(self.backup.iterdir()), [])
+
+    def test_file_failure_rolls_back_database_and_prior_file(self):
+        before = self.logical_db()
+        original = {p: p.read_bytes() for p in (self.data / 'SOUL.md', self.data / 'cron/jobs.json')}
+        real_atomic = m.atomic
+        calls = 0
+
+        def fail_second(path, data, metadata):
+            nonlocal calls
+            calls += 1
+            if calls == 2:
+                raise OSError('injected write failure')
+            return real_atomic(path, data, metadata)
+
+        with patch.object(m, 'atomic', side_effect=fail_second):
+            with self.assertRaisesRegex(OSError, 'injected'):
+                self.update()
+        self.assertEqual(self.logical_db(), before)
+        self.assertTrue(all(path.read_bytes() == raw for path, raw in original.items()))
+
+    def test_unrelated_trigger_write_aborts(self):
+        with sqlite3.connect(self.data / 'state.db') as db:
+            db.execute("CREATE TRIGGER forbidden AFTER UPDATE ON sessions BEGIN UPDATE messages SET message='changed'; END")
+        before = self.logical_db()
+        with self.assertRaisesRegex(RuntimeError, 'unrelated database'):
+            self.update()
+        self.assertEqual(self.logical_db(), before)
+
+    def test_management_replaces_both_blocks_and_disables_old_cron(self):
+        start, end = '<!-- bounded-operations-policy:start -->', '<!-- bounded-operations-policy:end -->'
+        old, new = start+'\nold bounded\n'+end, start+'\nLLM decides\n'+end
+        self.source.write_text(self.source.read_text() + '\n' + new)
+        soul = self.data / 'SOUL.md'
+        soul.write_text(soul.read_text() + '\n' + old)
+        with sqlite3.connect(self.data / 'state.db') as db:
+            prompt = db.execute('SELECT prompt FROM system_prompts').fetchone()[0] + '\n' + old
+            digest = m.sha(prompt.encode())
+            db.execute('INSERT INTO system_prompts VALUES(?,?)', (digest, prompt))
+            db.execute('UPDATE sessions SET system_prompt_hash=?', (digest,))
+        prompt_file = self.root / 'prompt'
+        prompt_file.write_text('LLM management policy. ' * 10)
+        result = self.update(management_prompt=prompt_file)
+        self.assertTrue(result['unrelated_tables_unchanged'])
+        self.assertIn(new, soul.read_text())
+        jobs = json.loads((self.data / 'cron/jobs.json').read_text())['jobs']
+        self.assertFalse(jobs[0]['enabled'])
+        self.assertEqual(jobs[0]['id'], 'preserved')
+        self.assertEqual(jobs[0]['prompt'], prompt_file.read_text())
+        with sqlite3.connect(self.data / 'state.db') as db:
+            current = db.execute('SELECT p.prompt FROM sessions s JOIN system_prompts p ON p.hash=s.system_prompt_hash').fetchone()[0]
+            self.assertIn(new, current)
+            self.assertNotIn(old, current)
+
+    def test_chat_format_replaces_current_policy_and_preserves_history_and_permissions(self):
+        source = Path(__file__).with_name('SOUL.groot.md').read_text()
+        policy = m.block(source)
+        heading, end = '### SOC 응답 서식\n', '\n## 보안 룰 변경 요청\n'
+        current_format = policy.split(heading, 1)[1].split(end, 1)[0]
+        self.assertIn('`- **대상명**: 상태 — 근거`', current_format)
+        self.assertIn('`- **항목명**: 내용`', current_format)
+        self.assertNotIn('`대상 | 상태 | 근거`', current_format)
+        self.assertNotIn('`항목 | 내용`', current_format)
+        previous_format = (
+            '- 확인 내역은 `대상 | 상태 | 근거`의 3열 Markdown 표로 작성한다.\n'
+            '- 승인 요청은 `항목 | 내용`의 2열 표로 작성한다.\n'
+            '- 표는 2~3열, 기본 6행 이내로 유지한다.\n'
+            '- 조회 실패와 승인 상태를 사실대로 보고한다.\n')
+        previous_policy = policy.replace(current_format, previous_format, 1)
+        self.assertNotEqual(previous_policy, policy)
+        # The migration changes presentation only; all write/approval rules are
+        # already identical to the new source in the old-session fixture.
+        self.assertEqual(previous_policy.split(end, 1)[1], policy.split(end, 1)[1])
+        bounded = m.block(source, '<!-- bounded-operations-policy:start -->',
+                           '<!-- bounded-operations-policy:end -->')
+        self.source.write_text(source)
+        soul = self.data / 'SOUL.md'
+        soul.write_text('persona\n' + previous_policy + '\n' + bounded + '\nother policy')
+        old_prompt = 'history prompt prefix\n' + previous_policy + '\n' + bounded + '\nhistory prompt suffix'
+        old_hash = m.sha(old_prompt.encode())
+        with sqlite3.connect(self.data / 'state.db') as db:
+            db.execute('INSERT INTO system_prompts VALUES(?,?)', (old_hash, old_prompt))
+            db.execute('UPDATE sessions SET system_prompt_hash=?', (old_hash,))
+        jobs = self.data / 'cron/jobs.json'
+        jobs.write_bytes(jobs.read_bytes().replace(m.OLD_CRON.encode(), m.NEW_CRON.encode()))
+        before_jobs = jobs.read_bytes()
+        before_mirror = (self.data / 'sessions/sessions.json').read_bytes()
+        result = self.update()
+        self.assertEqual(result['sessions'], 1)
+        self.assertTrue(result['unrelated_tables_unchanged'])
+        self.assertEqual(soul.read_text(), 'persona\n' + policy + '\n' + bounded + '\nother policy')
+        self.assertEqual(jobs.read_bytes(), before_jobs)
+        self.assertEqual((self.data / 'sessions/sessions.json').read_bytes(), before_mirror)
+        with sqlite3.connect(self.data / 'state.db') as db:
+            current = db.execute('SELECT p.prompt FROM sessions s JOIN system_prompts p ON p.hash=s.system_prompt_hash').fetchone()[0]
+            self.assertEqual(current, old_prompt.replace(previous_policy, policy, 1))
+            self.assertEqual(db.execute('SELECT prompt FROM system_prompts WHERE hash=?', (old_hash,)).fetchone()[0], old_prompt)
+            self.assertEqual(db.execute('SELECT history FROM sessions').fetchone()[0], 'unchanged')
+            self.assertEqual(db.execute('SELECT message FROM messages').fetchone()[0], 'tool history and conversation')
+
+    def memory_fixture(self):
+        old = 'old live-state claim'
+        (self.data / 'memories').mkdir()
+        (self.data / 'memories/MEMORY.md').write_text(old + '\n')
+        snapshot = self.root / 'memory-new.md'
+        snapshot.write_text('checked snapshot\n')
+        frame = 'MEMORY (your personal notes) [1% — 20/2,200 chars]\n' + '═' * 8 + '\n' + old + '\n\nConversation started: retained\n'
+        with sqlite3.connect(self.data / 'state.db') as db:
+            prompt = self.old + '\n' + frame
+            h = m.sha(prompt.encode())
+            db.execute('INSERT INTO system_prompts VALUES(?,?)', (h, prompt))
+            db.execute('UPDATE sessions SET system_prompt_hash=? WHERE id=?', (h, 's1'))
+        return snapshot, prompt, h
+
+    def test_memory_refresh_preserves_messages_user_frame_and_old_blob(self):
+        snapshot, prompt, h = self.memory_fixture()
+        result = self.update(memory_file=snapshot, preserve_cron=True)
+        self.assertTrue(result['memory_file_updated'])
+        self.assertEqual(result['cached_memory_frames_refreshed'], 1)
+        self.assertEqual((self.data / 'memories/MEMORY.md').read_text(), 'checked snapshot\n')
+        with sqlite3.connect(self.data / 'state.db') as db:
+            updated = db.execute('SELECT p.prompt FROM sessions s JOIN system_prompts p ON p.hash=s.system_prompt_hash').fetchone()[0]
+            self.assertNotIn('old live-state claim', updated)
+            self.assertIn('checked snapshot', updated)
+            self.assertIn('Conversation started: retained', updated)
+            self.assertEqual(db.execute('SELECT prompt FROM system_prompts WHERE hash=?', (h,)).fetchone()[0], prompt)
+            self.assertEqual(db.execute('SELECT message FROM messages').fetchone()[0], 'tool history and conversation')
+
+    def test_memory_write_failure_rolls_back_refs_policy_and_memory(self):
+        snapshot, prompt, h = self.memory_fixture()
+        before = self.logical_db()
+        old_soul = (self.data / 'SOUL.md').read_bytes()
+        original_atomic = m.atomic
+        def failing(path, data, meta):
+            if path.name == 'MEMORY.md' and data == snapshot.read_bytes():
+                raise OSError('injected memory write failure')
+            return original_atomic(path, data, meta)
+        with mock.patch.object(m, 'atomic', side_effect=failing), self.assertRaises(OSError):
+            self.update(memory_file=snapshot, preserve_cron=True)
+        self.assertEqual(self.logical_db(), before)
+        self.assertEqual((self.data / 'SOUL.md').read_bytes(), old_soul)
+        self.assertEqual((self.data / 'memories/MEMORY.md').read_text(), 'old live-state claim\n')
+
+    def test_memory_mismatch_ambiguity_and_budget_refuse_changes(self):
+        frame = 'MEMORY (your personal notes) [1% — 3/10 chars]\n' + '═' * 8 + '\nold\n\nConversation started: retained\n'
+        for text, old, new in ((frame, 'other', 'new'), (frame + frame, 'old', 'new'), (frame, 'old', 'x' * 11)):
+            with self.assertRaises(RuntimeError):
+                m.replace_cached_memory(text, old, new)
+        self.assertEqual(m.replace_cached_memory('no memory frame', 'old', 'new'), 'no memory frame')
+        user = '\nUSER (user profile)\nuser preference: old'
+        text = frame.replace('\nConversation started: retained\n', user)
+        updated = m.replace_cached_memory(text, 'old', 'new')
+        self.assertTrue(updated.endswith(user))
+
+
+if __name__ == '__main__':
+    unittest.main()

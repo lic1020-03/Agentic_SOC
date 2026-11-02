@@ -1,0 +1,90 @@
+# 자격증명·로그·데이터·OS 파일 커밋 금지
+.env
+**/.env
+**/logs/
+**/*-data/
+.DS_Store
+**/.DS_Store
+**/__pycache__/
+*.pyc
+
+# Claude Code 개인 로컬 설정
+.claude/settings.local.json
+
+# 자격증명 노트 (git 커밋 금지)
+*CREDENTIALS*.md
+/.CREDENTIALS.local.md.sw?
+*credentials*.md
+
+# 공인 인증서 개인키·ACME 작업 상태는 저장소에 넣지 않음
+*.key
+*.pem
+.acme-state/
+
+# datasets/ 디렉터리 압축본(로컬 전용, 추적 안 함)
+datasets.zip
+
+# Per-environment deployment input and credentials
+deployment/*.local.conf
+**/*secrets*.env
+**/enrollment.pass
+
+# 업무분담 문서는 로컬에만 보관
+/업무분담.md
+
+# 대화·작업 기록은 로컬에만 보관
+/대화기록/
+
+# 발표 대본·예상 질문은 하위 경로까지 로컬에만 보관
+/발표자료/
+/최종발표/
+
+# 포스터 및 모든 하위 폴더·파일은 로컬에만 보관
+/포스터/
+
+# 통합 데이터셋 원본·정제본 압축 보관소와 검증/작업 공간은 로컬 전용
+/datasets/archives/
+
+# 졸업논문 참고자료와 작성 중 원고는 로컬에 보관
+/논문/
+
+# Model weights and generated training/export artifacts stay on DGX/Thor.
+# Keep small source/config/provenance manifests in Git; never force-add weights.
+*.[gG][gG][uU][fF]
+*.safetensors
+*.ckpt
+*.pt
+*.pth
+*.pth.tar
+*.onnx
+*.keras
+pytorch_model*.bin
+adapter_model*.bin
+ggml*.bin
+*.ggml
+model.bin
+*weights*.bin
+consolidated*.bin
+model-*-of-*.bin
+optimizer*.bin
+optimizer*.pkl
+model*.h5
+model*.hdf5
+/finetuning/checkpoints/
+/finetuning/outputs/
+/finetuning/exports/
+
+# 재생성 가능한 벤치마크 원시 출력·룰 후보·토폴로지 중간 산출물
+/infra/hermes/benchmarks/results/**/results.jsonl
+/infra/hermes/benchmarks/results/**/candidate-*.conf
+/topology/*_rule_mcp.png
+
+# Additional local credentials and runtime files
+.env.*
+!.env.example
+*.local.*
+*CREDENTIALS*
+id_rsa*
+id_ed25519*
+node_modules/
+.venv/

@@ -1,0 +1,346 @@
+{
+  "agent001_transport_test": false,
+  "agent_id": "000",
+  "capacity_before": {
+    "MemAvailable": 12543884,
+    "SwapFree": 4194300,
+    "cpu_affinity_count": 4,
+    "disk_free_bytes": 109349695488
+  },
+  "cleanup": {
+    "direct_child_reaped": true,
+    "exit_code": 1,
+    "live_process_group_members": 0,
+    "pid": 2380183,
+    "start_ticks": "145185593"
+  },
+  "elapsed_seconds": 642.808,
+  "errors": [],
+  "indexer_or_delivery_ack_test": false,
+  "input_sha256": "02f867403ea733e1286e55e9bec0ff393d55f130f07c145361ac9b8413829bcc",
+  "load": {
+    "actual_sent_eps": 50.024958,
+    "alert_leaf_counts": {
+      "100293": 2000,
+      "100294": 2000
+    },
+    "alert_writer_drained": true,
+    "archive_completion_after_start_seconds": 599.999223,
+    "archive_exact_payloads": true,
+    "archive_leaf_counts": {
+      "100293": 2000,
+      "100294": 2000
+    },
+    "archive_rows": 30000,
+    "errors": [],
+    "exact_group_expectations": true,
+    "expected_leaf_counts": {
+      "100293": 2000,
+      "100294": 2000
+    },
+    "fully_drained_stable_seconds": 10.0,
+    "group_leaf_mismatches": [],
+    "groups": 2000,
+    "input_rows": 30000,
+    "latency_includes_writer_flush_and_poll": true,
+    "logtest_executed": false,
+    "microburst_period_ms": 300,
+    "microburst_rows": 15,
+    "native_state_summary": {
+      "archive_payload_and_alert_identity_is_primary_drain_evidence": true,
+      "available": true,
+      "configured_state_interval_seconds": 5,
+      "counter_delta": {
+        "alerts_written": 4000,
+        "events_dropped": 0,
+        "events_processed": 30000,
+        "events_received": 30000,
+        "total_events_decoded": 30000
+      },
+      "final_counters": {
+        "alerts_written": 4000,
+        "events_dropped": 0,
+        "events_processed": 30000,
+        "events_received": 30000,
+        "total_events_decoded": 30000
+      },
+      "final_queue_usage": {
+        "alerts_queue_usage": 0.0,
+        "archives_queue_usage": 0.0,
+        "dbsync_queue_usage": 0.0,
+        "event_queue_usage": 0.0,
+        "firewall_queue_usage": 0.0,
+        "hostinfo_queue_usage": 0.0,
+        "rootcheck_queue_usage": 0.0,
+        "rule_matching_queue_usage": 0.0,
+        "sca_queue_usage": 0.0,
+        "statistical_queue_usage": 0.0,
+        "syscheck_queue_usage": 0.0,
+        "syscollector_queue_usage": 0.0,
+        "upgrade_queue_usage": 0.0,
+        "winevt_queue_usage": 0.0
+      },
+      "final_sampled_queues_zero": true,
+      "first_counters": {
+        "alerts_written": 0,
+        "events_dropped": 0,
+        "events_processed": 0,
+        "events_received": 0,
+        "total_events_decoded": 0
+      },
+      "last_state_age_seconds": 5.056,
+      "max_sampled_queue_usage": {
+        "alerts_queue_usage": 0.0,
+        "archives_queue_usage": 0.0,
+        "dbsync_queue_usage": 0.0,
+        "event_queue_usage": 0.0,
+        "firewall_queue_usage": 0.0,
+        "hostinfo_queue_usage": 0.0,
+        "rootcheck_queue_usage": 0.0,
+        "rule_matching_queue_usage": 0.0,
+        "sca_queue_usage": 0.0,
+        "statistical_queue_usage": 0.0,
+        "syscheck_queue_usage": 0.0,
+        "syscollector_queue_usage": 0.0,
+        "upgrade_queue_usage": 0.0,
+        "winevt_queue_usage": 0.0
+      },
+      "poll_seconds": 1,
+      "processed_equals_input": true,
+      "received_decoded_exact_input_and_zero_drop": true,
+      "sampled_zero_queues_is_continuous_zero_guarantee": false,
+      "unique_state_updates": 122
+    },
+    "process_cpu_seconds": 21.62,
+    "raw_archives_remain_on_server": true,
+    "scheduled_eps": 50,
+    "scheduled_load_seconds": 600,
+    "send_to_archive_observation_ms": {
+      "max": 355.351,
+      "p50": 11.101,
+      "p95": 304.988,
+      "p99": 305.595
+    },
+    "sender_max_schedule_lag_ms": 2.724,
+    "sent_elapsed_seconds": 599.700658,
+    "sent_rows": 30000,
+    "socket_send_is_analysis_ack": false,
+    "total_elapsed_seconds": 610.033,
+    "window_average_sent_eps": 50.0
+  },
+  "load_verification_completed": true,
+  "native_children_cleaned": true,
+  "observed_at_kst": "2026-10-15T10:47:43.789889+09:00",
+  "options": {
+    "analysisd.decoder_order_size": 1024,
+    "analysisd.event_threads": 1,
+    "analysisd.rule_matching_threads": 1
+  },
+  "policy": "private-analysisd-600s-v1",
+  "private_configuration": {
+    "binary_sha256": "2cf9e9abf7cba809ab525004338513c7f0c442904f1e57e534b06594b1cf2019",
+    "config_sha256": "885aaf0c8a8c814b40be6d6139365d0d25fc250b6147a544572fa880a2f8379d",
+    "local_options_sha256": "cf342f2c1f31a533c2a89a24042c7f58d493a1de074f9e48f9f3451bcb98a540",
+    "rules_sha256": "9f76264a8038c5c377b4c24a53ab2e3acc0eaf3fce7632df07f921cabdd26995",
+    "thread_options": {
+      "analysisd.event_threads": "1",
+      "analysisd.rule_matching_threads": "1"
+    }
+  },
+  "production_after": {
+    "analysisd_pid": 2316141,
+    "analysisd_start": "144669127",
+    "cid": "45b85672e0fe16fd14616e608c99b683e2f651b049efcd71da2b45367b057806",
+    "hashes": {
+      "bin/wazuh-analysisd": "2cf9e9abf7cba809ab525004338513c7f0c442904f1e57e534b06594b1cf2019",
+      "etc/ossec.conf": "09cd17e4e846b73b6ea6a17038982783de74a768fe100e4403cb74482e93c604",
+      "etc/rules/capstone_vector_rules.xml": "9f76264a8038c5c377b4c24a53ab2e3acc0eaf3fce7632df07f921cabdd26995",
+      "etc/rules/local_rules.xml": "644b298348bf476e6f538267aab531b262ce895a191aac8df1ac47b0c1e80ec0"
+    },
+    "host_identity_files": {
+      "/etc/group": {
+        "devino": [
+          64512,
+          3147434
+        ],
+        "gid": 0,
+        "mode": 420,
+        "sha256": "0c4168e8a563cc2ecee24aa855c9012cdbd503f9c7baa7f227f61c4f2652f9a8",
+        "uid": 0
+      },
+      "/etc/passwd": {
+        "devino": [
+          64512,
+          3147441
+        ],
+        "gid": 0,
+        "mode": 420,
+        "sha256": "42f5d73ed6ff90c87075294aeea54f3dbbd25384f9eb94a7b125f7b2c4ddfe5f",
+        "uid": 0
+      }
+    },
+    "init_pid": 2315523,
+    "options": {
+      "etc/internal_options.conf": {
+        "identity": [
+          64512,
+          6317646,
+          14961,
+          0,
+          999,
+          33184,
+          1,
+          1789730155000000000,
+          1790424775950060249
+        ],
+        "sha256": "2f434217b2f894a4cf3164ef6a1f4471d9196e5ad21f19c2e21c5be97b16e26a"
+      },
+      "etc/local_internal_options.conf": {
+        "identity": [
+          64512,
+          6319101,
+          414,
+          0,
+          999,
+          33184,
+          1,
+          1792023044146413221,
+          1792023044147413312
+        ],
+        "sha256": "faf2f2690064ecbbad8953837eba3801ad60f1d7feebf1728385663a90bc585e"
+      }
+    },
+    "queue": [
+      64512,
+      6317390
+    ],
+    "root": [
+      52,
+      5669366
+    ],
+    "started_at": "2026-10-15T00:10:50.875022782Z"
+  },
+  "production_before": {
+    "analysisd_pid": 2316141,
+    "analysisd_start": "144669127",
+    "cid": "45b85672e0fe16fd14616e608c99b683e2f651b049efcd71da2b45367b057806",
+    "hashes": {
+      "bin/wazuh-analysisd": "2cf9e9abf7cba809ab525004338513c7f0c442904f1e57e534b06594b1cf2019",
+      "etc/ossec.conf": "09cd17e4e846b73b6ea6a17038982783de74a768fe100e4403cb74482e93c604",
+      "etc/rules/capstone_vector_rules.xml": "9f76264a8038c5c377b4c24a53ab2e3acc0eaf3fce7632df07f921cabdd26995",
+      "etc/rules/local_rules.xml": "644b298348bf476e6f538267aab531b262ce895a191aac8df1ac47b0c1e80ec0"
+    },
+    "host_identity_files": {
+      "/etc/group": {
+        "devino": [
+          64512,
+          3147434
+        ],
+        "gid": 0,
+        "mode": 420,
+        "sha256": "0c4168e8a563cc2ecee24aa855c9012cdbd503f9c7baa7f227f61c4f2652f9a8",
+        "uid": 0
+      },
+      "/etc/passwd": {
+        "devino": [
+          64512,
+          3147441
+        ],
+        "gid": 0,
+        "mode": 420,
+        "sha256": "42f5d73ed6ff90c87075294aeea54f3dbbd25384f9eb94a7b125f7b2c4ddfe5f",
+        "uid": 0
+      }
+    },
+    "init_pid": 2315523,
+    "options": {
+      "etc/internal_options.conf": {
+        "identity": [
+          64512,
+          6317646,
+          14961,
+          0,
+          999,
+          33184,
+          1,
+          1789730155000000000,
+          1790424775950060249
+        ],
+        "sha256": "2f434217b2f894a4cf3164ef6a1f4471d9196e5ad21f19c2e21c5be97b16e26a"
+      },
+      "etc/local_internal_options.conf": {
+        "identity": [
+          64512,
+          6319101,
+          414,
+          0,
+          999,
+          33184,
+          1,
+          1792023044146413221,
+          1792023044147413312
+        ],
+        "sha256": "faf2f2690064ecbbad8953837eba3801ad60f1d7feebf1728385663a90bc585e"
+      }
+    },
+    "queue": [
+      64512,
+      6317390
+    ],
+    "root": [
+      52,
+      5669366
+    ],
+    "started_at": "2026-10-15T00:10:50.875022782Z"
+  },
+  "production_checkpoints_written": false,
+  "production_inputs_written": false,
+  "production_services_restarted": false,
+  "production_unchanged": true,
+  "progress": {
+    "archive_leaf_counts": {
+      "100293": 2000,
+      "100294": 2000
+    },
+    "archive_rows": 30000,
+    "elapsed_seconds": 600.057,
+    "phase": "load_or_drain",
+    "sent_rows": 30000
+  },
+  "runtime": {
+    "mount_namespace_private": true,
+    "network_namespace_private": true,
+    "open_file_paths_private_or_device_allowlist": true,
+    "pid": 2380183,
+    "production_socket_inodes_disjoint": true,
+    "root_private": true,
+    "start_ticks": "145185593",
+    "threads": 44
+  },
+  "source_pins": {
+    "correlation-diagnosis/run-isolated-b.py": "605f5296dc104c16b528cf6639dbe0a8167bdd5b0d13b8431b4d20f4759f3821",
+    "correlation-fix/run-load-b.py": "69b7bd1aaa8bc5224da32978422b21b7ef8d20830dd35c0a43236206c965bc63",
+    "fixtures/correlation/canary-cross.jsonl": "1ff2615c3c1cd8aa365d13c4125f86bdc5bf1dd5823b3c703c32e455a8359e7c",
+    "fixtures/correlation/canary-historical.jsonl": "dfeb3224ef59e47d20c7e6b1157dbe911d51b9dfadf333079d8dd850459633a3",
+    "fixtures/correlation/canary-repeat-duplicate.jsonl": "4660b20d4ef1233d9dbcff6f67da81b0261fc380e1a60ecfb9161cdcdc5eacc2",
+    "fixtures/correlation/canary-repeat.jsonl": "6fd45116feb2d957a84b169eacceaed71bd290580b9274f4c2bc9bd46f0bd6bc"
+  },
+  "source_sha256": "3ca9499f6e4635995843be8db28fd9afdd58c8e370aa065495771d4a5dac72f8",
+  "status": "passed",
+  "_storage": {
+    "kind": "public_summary_with_detailed_samples_archived",
+    "original_bytes": 1373655,
+    "original_sha256": "cb58fb416dc4b1949382d4bafb666647c11739b822af6164c67b6352efd06af2",
+    "original_commit": "f9291ac6625fc5dc2a6535f17e124f9ffb604a13",
+    "original_path": "infra/normalization/wazuh-vector/indexer-native/delay-audit-20261015/load/validation-2026-10-15.json",
+    "omitted_details": [
+      {
+        "pointer": "/load/samples",
+        "count": 609,
+        "canonical_json_sha256": "15212da3d9a1f635f96e5b87d154f8dafdf2b5afc355bbf2b882451624f165a2"
+      }
+    ],
+    "other_values_unchanged": true,
+    "recovery_guide": "../../../../../../archive/REPOSITORY_CLEANUP.md"
+  }
+}

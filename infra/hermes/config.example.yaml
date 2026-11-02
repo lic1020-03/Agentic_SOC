@@ -1,0 +1,144 @@
+# 2026-10-31 contract1.5.7/query1.17: 단문 대상1회확인·동일사용자/스레드 대상상속, systemd 현재실패3대상, 승인형 A Vector/A·B host wazuh-agent restart. MCP/키/포트 추가 없음. 세부 infra/mcp/host-service-actions.md
+# 2026-10-25 chat-contract1.0/query-completion1.7: 일반 Mattermost 추론off/temp0/top_p0.95/output2048, native iteration<=12. MCP 읽기90초/보호720초. 자동관리CLI 추론설정 별도.
+# query-completion1.6.0: IDS=a:suricata, 조회 time_display 및 calculate_time의 KST/경과값 사용. 원본 로그/승인 해시는 보존.
+# 2026-10-25 현행: 조회는 rule-a/b(ruleview), 변경 제안은 rule-write-a/b(rulechg) 단일 경로. 총8논리 MCP/36도구이며 추가 VM은 없다. 아래 과거 배포 이력은 당시 범위다.
+# Hermes Agent 설정 템플릿 — Groot SOC. 실배치 경로: Groot_B /opt/hermes-data/config.yaml (컨테이너 /opt/data/config.yaml)
+# 실행: 공식 Docker 이미지 nousresearch/hermes-agent(오프라인 반입), 데이터 볼륨 /opt/hermes-data:/opt/data, HERMES_UID/GID=호스트 hermes 사용자.
+# 핵심(A안): Wazuh API·인덱서·FW 자격증명은 여기 없다. MCP 서버는 sshd ForceCommand 경계(mcp@B, resp@A, rulechg@A/B)로만 붙고,
+#   컨테이너는 계정별 authorized_keys 에 restrict,command= 로 등록된 전용 SSH 키만 가진다(/opt/data/home/.ssh/).
+#   호스트 사용자 hermes 는 mcp 그룹이 아니라 /etc/mcp/*.env 를 읽을 수 없다.
+# 배치·검증: infra/hermes/deploy_hermes_B.sh (prep | load <tar> | test). 이미지엔 mcp[cli] 가 없어 `hermes mcp test` 불가.
+# 2026-09-28 실측은 17툴/2서버(읽기 14+응답 3). security-events 2툴은 2026-10-06 B 배치·원격 조회 검증 후 Hermes 실설정에 등록했다. `hermes mcp list`의 3서버 enabled와 LLM의 새 도구 2개 실제 호출을 확인했다.
+# 2026-10-08 라이브 배포: 별도 승인형 로컬 룰 변경 MCP rule-a/rule-b(각 3툴)를 추가했고 Hermes에서 5서버 enabled와 양쪽 읽기 전용 SSH 조회를 확인했다. 실제 승인→룰 적용 E2E는 미검증이다.
+# 2026-10-13 19:14 후속: rule-a/rule-b 각8툴(propose_rule_edit 추가)·실제 UID 조회/잘못된 편집 거절 검증. timeout420·기존 모델 유지. 새 부분편집 승인→적용 E2E는 후속 확인.
+# 2026-10-13 19:50~19:54 후속: DGX 두 주소 예외를 승인 후 worker가 적용했다. Suricata 시작 19:50:28·로드 19:50:41.988, 19:51 applied·19:54 승인 소비/결과 게시/로드 성공 52,497건·failed/skipped 0 확인.
+# Hermes endpoint를 .110에서 .111로 전환했고 모델·MCP timeout 420초는 유지했다. 실제 UID로 rule-a/rule-b 각 8개 도구와 세 룰 대상 조회를 재확인했다.
+
+mcp_servers:
+  wazuh-ro:                                   # 읽기 MCP 서버(B, gbrigandi/mcp-server-wazuh, 계정 mcp-ro) — 14 툴
+    command: ssh
+    args: ["-T", "-F", "/opt/data/home/.ssh/config", "mcp-b"]   # ssh config 의 Host mcp-b = mcp@10.200.10.10 (키·known_hosts 는 /opt/data/home/.ssh)
+    env:
+      HOME: /opt/data/home                    # Hermes 는 셸 env 를 전부 넘기지 않으므로 HOME 명시
+    connect_timeout: 60
+    timeout: 90
+    supports_parallel_tool_calls: false
+    tools:
+      resources: false
+      prompts: false
+    trust: full                               # 읽기전용 서버
+  security-events:                            # 보안 이벤트 MCP(B, 같은 mcp 계정/키, 정확한 원격 명령만 분기) — 읽기 2툴
+    command: ssh
+    args: ["-T", "-F", "/opt/data/home/.ssh/config", "mcp-b", "security-events"]
+    env:
+      HOME: /opt/data/home
+    connect_timeout: 60
+    timeout: 90
+    supports_parallel_tool_calls: false
+    tools:
+      resources: false
+      prompts: false
+    trust: full
+  system-diagnostics:                         # 고정 A/B/C root snapshot 조회 + 순수 calculate_time 2툴, shell/원문 journal 권한 없음
+    command: ssh
+    args: ["-T", "-F", "/opt/data/home/.ssh/config", "mcp-b", "system-diagnostics"]
+    env: {HOME: /opt/data/home}
+    connect_timeout: 60
+    timeout: 90
+    supports_parallel_tool_calls: false
+    tools: {resources: false, prompts: false}
+    trust: full                               # 반환 오류는 비신뢰 증거, 승인/운영 명령 아님
+  resp:                                       # 응답(차단) MCP 서버(A, response-mcp.py, 계정 resp) — get_firewall_rules/list_blocks 읽기 + block_ip/unblock_ip 보호쓰기
+    command: ssh
+    args: ["-T", "-F", "/opt/data/home/.ssh/config", "resp-a"]  # Host resp-a = resp@10.200.10.1
+    env:
+      HOME: /opt/data/home
+    connect_timeout: 60
+    timeout: 720
+    supports_parallel_tool_calls: false
+    tools:
+      resources: false
+      prompts: false
+    trust: full                               # 라이브는 서버측 승인 브로커가 block_ip 승인 강제(2026-09-28 실측)
+  # rule-change-mcp:start
+  rule-a:                                     # A 고정 파일/작업 조회4종, ruleview 읽기 전용 계정/별도 키
+    command: ssh
+    args: ["-T", "-F", "/opt/data/home/.ssh/config", "rule-a"]
+    env: {HOME: /opt/data/home}
+    connect_timeout: 60
+    timeout: 90
+    supports_parallel_tool_calls: false
+    trust: full                               # 승인 강제는 서버측 브로커·root 실행기
+  rule-b:                                     # B 고정 파일/작업 조회4종, ruleview 읽기 전용 계정/별도 키
+    command: ssh
+    args: ["-T", "-F", "/opt/data/home/.ssh/config", "rule-b"]
+    env: {HOME: /opt/data/home}
+    connect_timeout: 60
+    timeout: 90
+    supports_parallel_tool_calls: false
+    trust: full
+  rule-write-a:                              # rulechg 변경 제안 전용; 조회 도구 없음
+    command: ssh
+    args: ["-T", "-F", "/opt/data/home/.ssh/config", "rule-write-a"]
+    env: {HOME: /opt/data/home}
+    connect_timeout: 60
+    timeout: 720
+    supports_parallel_tool_calls: false
+    trust: full
+  rule-write-b:                              # rulechg 변경 제안 전용; 조회 도구 없음
+    command: ssh
+    args: ["-T", "-F", "/opt/data/home/.ssh/config", "rule-write-b"]
+    env: {HOME: /opt/data/home}
+    connect_timeout: 60
+    timeout: 720
+    supports_parallel_tool_calls: false
+    trust: full
+  # rule-change-mcp:end
+
+security:
+  allow_lazy_installs: false                  # 오프라인: 런타임 pip 설치 시도 금지
+
+# 2026-10-15: 일반 terminal/file/code/delegation 도구를 관리 작업에 노출하지 않는다.
+# 2026-10-23 초기 계약: 당시5개 MCP에 읽기전용 system-diagnostics를 추가했다. 2026-10-29 현행8연결/38도구(읽기29/보호9)는 위 설정을 따른다. resp.get_firewall_rules는 전체 FW 읽기다.
+# 배포 전후 _get_platform_tools 결과가 아래6개와 정확히 같음을
+# 당시 확인하고 known_builtin_toolsets/known_plugin_toolsets도 해당 설치본 기준으로 저장했다.
+# 버전 변경 시 기본 도구 자동 추가 여부를 다시 검사한다.
+platform_toolsets:
+  mattermost: [wazuh-ro, security-events, resp, rule-a, rule-b, rule-write-a, rule-write-b, system-diagnostics]
+  cron: [wazuh-ro, security-events, resp, rule-a, rule-b, rule-write-a, rule-write-b, system-diagnostics]
+  cli: [wazuh-ro, security-events, resp, rule-a, rule-b, rule-write-a, rule-write-b, system-diagnostics]
+
+# ── 모델(LLM) — DGX Spark Ollama (2026-09-28 최초 연결, 2026-10-13 19:51 .111 전환) ──
+# 두 노드 211.170.162.110 / .111 :11434 (OpenAI 호환 /v1, 인증 없음). 아래는 10/13 19:51:45 KST resolver로 확인한 실배치 값이다.
+model:
+  provider: custom
+  base_url: http://211.170.162.111:11434/v1     # 이전 운영 endpoint는 .110. 기존 대화 DB·.env·SOUL·cron을 보존하고 전환했다.
+  default: qwen3.6:35b                        # qwen35moe 36B Q4_K_M, tools/thinking. 동일 태그지만 노드별 패키징·Ollama 버전은 다름(STATUS.md 참조).
+# .111은 언어 모델+projector 분리 패키지이며 합계 파라미터 수는 .110과 같다. 작은 모델로 교체한 것으로 해석하지 않는다.
+# 2026-09-28 당시 .110 E2E 실측: chat -q → mcp__wazuh_ro__get_wazuh_agents 호출 → 답변(3 API call, 21s).
+# 2026-10-13 동일 Hermes 컨테이너 StartedAt=19:51:42.745 KST, Mattermost WebSocket 재연결 19:51:54·.111 API HTTP 200/한국어 응답 19:53 확인.
+# .111 전환 후 체감 속도·실제 채팅 왕복은 별도 미측정.
+
+# 2026-10-15 후속: 동일 합성 도구 입력에서 medium은 추론만 하다 상한 종료,
+# none은 정확한 native 호출 반환. 현재 모델만 지정하며 다른 모델 기본값은 유지한다.
+# gateway는 요청마다 다시 읽는다. 세션별 /reasoning 설정이 있으면 그 값이 우선한다.
+agent:
+  reasoning_overrides:
+    "qwen3.6:35b": "none"
+
+# ── 평가(측정) 모드: 학습 비활성화로 회차 독립성 확보 (infra/hermes/eval_reset.md) ──
+# memory:
+#   memory_enabled: false
+
+# 2026-10-13: Mattermost 설명은 한국어 출력 검사를 마친 뒤 전송한다.
+# 별도 이미지 코드 패치도 필요: korean-output-guard.md 참조.
+display:
+  platforms:
+    mattermost:
+      streaming: false
+      interim_assistant_messages: false
+      show_reasoning: false
+      thinking_progress: false
+      tool_progress: "off"
+      cleanup_progress: true
+      long_running_notifications: generic
